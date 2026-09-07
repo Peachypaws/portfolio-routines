@@ -1,0 +1,962 @@
+{
+ "_note": "Mechanical fields of the 62 Signal Inbox rows filed by X Sweep dry run 2 (2026-09-07). Read from Notion data source e23c4606-f1b9-45e3-8245-d8d6514a501d on 2026-09-07. Headline and Dated Claim are model-written and deliberately omitted. This is the expected-output side of the offline test; the input side (265 raw posts, saved pages) did not survive dry run 2's container.",
+ "rows": [
+  {
+   "post_url": "https://x.com/wallstengine/status/2095898280702148642",
+   "account": "@wallstengine",
+   "captured": "2026-09-04T15:34:00+00:00",
+   "bucket": "A",
+   "underlying_source_url": "https://www.theinformation.com/articles/anthropics-house-payments-tech-push-chip-away-stripe?rc=fi8p5u",
+   "publisher": "The Information",
+   "source_date": null,
+   "verification": "Unverified",
+   "owned_name_hits": [
+    "None"
+   ],
+   "anthropic_flag": true,
+   "translated_from": null
+  },
+  {
+   "post_url": "https://x.com/pequityresearch/status/2095904669197377766",
+   "account": "@pequityresearch",
+   "captured": "2026-09-04T15:59:00+00:00",
+   "bucket": "A",
+   "underlying_source_url": "https://assetallianceinvestmentgroup.com/",
+   "publisher": "Asset Alliance Investment Group",
+   "source_date": null,
+   "verification": "Source fetched",
+   "owned_name_hits": [
+    "None"
+   ],
+   "anthropic_flag": false,
+   "translated_from": null
+  },
+  {
+   "post_url": "https://x.com/pequityresearch/status/2095986644595724473",
+   "account": "@pequityresearch",
+   "captured": "2026-09-04T21:25:00+00:00",
+   "bucket": "A",
+   "underlying_source_url": "https://drive.google.com/file/d/1lwkQ3rkWh19rVTjtLWX3pTvk31nxdiPB/view?usp=share_link",
+   "publisher": "Aurelion Research",
+   "source_date": "2026-07-24",
+   "verification": "Unverified",
+   "owned_name_hits": [
+    "None"
+   ],
+   "anthropic_flag": false,
+   "translated_from": null
+  },
+  {
+   "post_url": "https://x.com/wallstengine/status/2096013767205323070",
+   "account": "@wallstengine, @DrNHJ",
+   "captured": "2026-09-04T23:13:00+00:00",
+   "bucket": "A",
+   "underlying_source_url": "https://www.reuters.com/world/anthropic-ipo-launch-shifts-toward-mid-october-sources-say-2026-09-04/",
+   "publisher": "Reuters",
+   "source_date": null,
+   "verification": "Unverified",
+   "owned_name_hits": [
+    "None"
+   ],
+   "anthropic_flag": true,
+   "translated_from": null
+  },
+  {
+   "post_url": "https://x.com/DrNHJ/status/2096027899124133952",
+   "account": "@DrNHJ",
+   "captured": "2026-09-05T00:09:00+00:00",
+   "bucket": "A",
+   "underlying_source_url": "https://www.reuters.com/legal/litigation/us-china-gear-up-mid-september-ai-safety-dialogue-2026-09-04/",
+   "publisher": "Reuters",
+   "source_date": null,
+   "verification": "Unverified",
+   "owned_name_hits": [
+    "None"
+   ],
+   "anthropic_flag": true,
+   "translated_from": "Korean"
+  },
+  {
+   "post_url": "https://x.com/dnystedt/status/2096087133442470136",
+   "account": "@dnystedt",
+   "captured": "2026-09-05T04:04:00+00:00",
+   "bucket": "A",
+   "underlying_source_url": "https://www.umc.com/en/IR_Financial/monthly_sales_revenue",
+   "publisher": "UMC",
+   "source_date": null,
+   "verification": "Unverified",
+   "owned_name_hits": [
+    "None"
+   ],
+   "anthropic_flag": false,
+   "translated_from": null
+  },
+  {
+   "post_url": "https://x.com/dnystedt/status/2096087213687939130",
+   "account": "@dnystedt",
+   "captured": "2026-09-05T04:05:00+00:00",
+   "bucket": "A",
+   "underlying_source_url": "https://www.winbond.com/hq/about-winbond/news-and-events/news/news00588.html?__locale=en",
+   "publisher": "Winbond",
+   "source_date": null,
+   "verification": "Source fetched",
+   "owned_name_hits": [
+    "None"
+   ],
+   "anthropic_flag": false,
+   "translated_from": null
+  },
+  {
+   "post_url": "https://x.com/QQ_Timmy/status/2096132537768943998",
+   "account": "@QQ_Timmy",
+   "captured": "2026-09-05T07:05:00+00:00",
+   "bucket": "A",
+   "underlying_source_url": "https://www.businessinsider.com/gavin-baker-ai-data-centers-awesome-blue-collar-americans-2026-9",
+   "publisher": "Business Insider",
+   "source_date": "2026-09-02",
+   "verification": "Source fetched",
+   "owned_name_hits": [
+    "None"
+   ],
+   "anthropic_flag": false,
+   "translated_from": "Chinese"
+  },
+  {
+   "post_url": "https://x.com/jukan05/status/2096176744478986582",
+   "account": "@jukan05",
+   "captured": "2026-09-05T10:00:00+00:00",
+   "bucket": "A",
+   "underlying_source_url": "https://www.etnews.com/20260904000236",
+   "publisher": "전자신문 (ETNews)",
+   "source_date": "2026-09-05",
+   "verification": "Source fetched",
+   "owned_name_hits": [
+    "None"
+   ],
+   "anthropic_flag": false,
+   "translated_from": null
+  },
+  {
+   "post_url": "https://x.com/DrNHJ/status/2096201134000296201",
+   "account": "@DrNHJ",
+   "captured": "2026-09-05T11:37:00+00:00",
+   "bucket": "A",
+   "underlying_source_url": "https://wallstreetcn.com/articles/3781148",
+   "publisher": "华尔街见闻 (Wallstreetcn)",
+   "source_date": null,
+   "verification": "Unverified",
+   "owned_name_hits": [
+    "MU",
+    "NVDA"
+   ],
+   "anthropic_flag": false,
+   "translated_from": "Korean"
+  },
+  {
+   "post_url": "https://x.com/TheValueist/status/2096285418140402053",
+   "account": "@TheValueist",
+   "captured": "2026-09-05T17:12:00+00:00",
+   "bucket": "A",
+   "underlying_source_url": "https://openai.com/business/learn/intelligence-at-work-financial-services/",
+   "publisher": "OpenAI",
+   "source_date": null,
+   "verification": "Unverified",
+   "owned_name_hits": [
+    "MU",
+    "NVDA"
+   ],
+   "anthropic_flag": false,
+   "translated_from": null
+  },
+  {
+   "post_url": "https://x.com/TheValueist/status/2096313321146200175",
+   "account": "@TheValueist",
+   "captured": "2026-09-05T19:03:00+00:00",
+   "bucket": "A",
+   "underlying_source_url": "https://simonwillison.net/2026/Sep/4/astra-pelicans/",
+   "publisher": "Simon Willison's Weblog",
+   "source_date": "2026-09-04",
+   "verification": "Source fetched",
+   "owned_name_hits": [
+    "MU",
+    "NVDA"
+   ],
+   "anthropic_flag": false,
+   "translated_from": null
+  },
+  {
+   "post_url": "https://x.com/DrNHJ/status/2096435483060703563",
+   "account": "@DrNHJ",
+   "captured": "2026-09-06T03:09:00+00:00",
+   "bucket": "A",
+   "underlying_source_url": "https://www.ctee.com.tw/news/20260906700013-430501",
+   "publisher": "工商時報 (Commercial Times)",
+   "source_date": "2026-09-06",
+   "verification": "Source fetched",
+   "owned_name_hits": [
+    "MU",
+    "NVDA",
+    "TSM"
+   ],
+   "anthropic_flag": false,
+   "translated_from": "Korean"
+  },
+  {
+   "post_url": "https://x.com/jukan05/status/2096438619477311607",
+   "account": "@jukan05",
+   "captured": "2026-09-06T03:21:00+00:00",
+   "bucket": "A",
+   "underlying_source_url": "https://ww2.money-link.com.tw/realtimenews/NewsContent.aspx?PU=1002&SN=6282337001",
+   "publisher": "MoneyLink 富聯網",
+   "source_date": null,
+   "verification": "Unverified",
+   "owned_name_hits": [
+    "None"
+   ],
+   "anthropic_flag": false,
+   "translated_from": null
+  },
+  {
+   "post_url": "https://x.com/DrNHJ/status/2096445883453960370",
+   "account": "@DrNHJ",
+   "captured": "2026-09-06T03:50:00+00:00",
+   "bucket": "A",
+   "underlying_source_url": "https://finance.sina.com.cn/7x24/2026-09-06/doc-iniqvvpf0287629.shtml",
+   "publisher": "新浪财经 (Sina Finance)",
+   "source_date": null,
+   "verification": "Unverified",
+   "owned_name_hits": [
+    "NVDA"
+   ],
+   "anthropic_flag": false,
+   "translated_from": "Korean"
+  },
+  {
+   "post_url": "https://x.com/pequityresearch/status/2096452608890138664",
+   "account": "@pequityresearch",
+   "captured": "2026-09-06T04:17:00+00:00",
+   "bucket": "A",
+   "underlying_source_url": "https://www.goldmansachs.com/pdfs/insights/goldman-sachs-research/optical-networking-the-next-mega-trend-in-ai-infrastructure/report.pdf",
+   "publisher": "Goldman Sachs",
+   "source_date": null,
+   "verification": "Unverified",
+   "owned_name_hits": [
+    "None"
+   ],
+   "anthropic_flag": false,
+   "translated_from": null
+  },
+  {
+   "post_url": "https://x.com/jukan05/status/2096470793756569640",
+   "account": "@jukan05",
+   "captured": "2026-09-06T05:29:00+00:00",
+   "bucket": "A",
+   "underlying_source_url": "https://irrationalanalysis.substack.com/p/hot-chips-2026-irrational-recap?r=28k8q1&showWelcomeOnShare=true",
+   "publisher": "Irrational Analysis",
+   "source_date": null,
+   "verification": "Source fetched",
+   "owned_name_hits": [
+    "None"
+   ],
+   "anthropic_flag": false,
+   "translated_from": null
+  },
+  {
+   "post_url": "https://x.com/QQ_Timmy/status/2096471641693790578",
+   "account": "@QQ_Timmy",
+   "captured": "2026-09-06T05:32:00+00:00",
+   "bucket": "B",
+   "underlying_source_url": null,
+   "publisher": "@QQ_Timmy",
+   "source_date": null,
+   "verification": "Unverified",
+   "owned_name_hits": [
+    "NVDA"
+   ],
+   "anthropic_flag": false,
+   "translated_from": "Chinese"
+  },
+  {
+   "post_url": "https://x.com/DrNHJ/status/2096492703890718917",
+   "account": "@DrNHJ",
+   "captured": "2026-09-06T06:56:00+00:00",
+   "bucket": "A",
+   "underlying_source_url": "https://www.nikkei.com/article/DGXZQOUC03CDT0T00C26A7000000/?n_cid=SNSTW001&n_tw=1788553582",
+   "publisher": "日本経済新聞 (Nikkei)",
+   "source_date": "2026-09-05",
+   "verification": "Source fetched",
+   "owned_name_hits": [
+    "MU",
+    "NVDA"
+   ],
+   "anthropic_flag": false,
+   "translated_from": "Korean"
+  },
+  {
+   "post_url": "https://x.com/dnystedt/status/2096546419041874231",
+   "account": "@dnystedt",
+   "captured": "2026-09-06T10:29:00+00:00",
+   "bucket": "A",
+   "underlying_source_url": "https://www.tel.co.jp/ir/policy/mplan/l5n12i00000000nu-att/2026irtechtalk_presentations-e.pdf",
+   "publisher": "Tokyo Electron",
+   "source_date": null,
+   "verification": "Unverified",
+   "owned_name_hits": [
+    "None"
+   ],
+   "anthropic_flag": false,
+   "translated_from": "Japanese"
+  },
+  {
+   "post_url": "https://x.com/dnystedt/status/2096546398619746436",
+   "account": "@dnystedt",
+   "captured": "2026-09-06T10:29:00+00:00",
+   "bucket": "B",
+   "underlying_source_url": null,
+   "publisher": "@dnystedt",
+   "source_date": null,
+   "verification": "Unverified",
+   "owned_name_hits": [
+    "NVDA"
+   ],
+   "anthropic_flag": false,
+   "translated_from": null
+  },
+  {
+   "post_url": "https://x.com/pequityresearch/status/2096603577435267582",
+   "account": "@pequityresearch",
+   "captured": "2026-09-06T14:17:00+00:00",
+   "bucket": "B",
+   "underlying_source_url": null,
+   "publisher": "@pequityresearch",
+   "source_date": null,
+   "verification": "Unverified",
+   "owned_name_hits": [
+    "MU"
+   ],
+   "anthropic_flag": false,
+   "translated_from": null
+  },
+  {
+   "post_url": "https://x.com/TheValueist/status/2096632110425518406",
+   "account": "@TheValueist",
+   "captured": "2026-09-06T16:10:00+00:00",
+   "bucket": "B",
+   "underlying_source_url": null,
+   "publisher": "@TheValueist",
+   "source_date": null,
+   "verification": "Unverified",
+   "owned_name_hits": [
+    "MU",
+    "NVDA"
+   ],
+   "anthropic_flag": false,
+   "translated_from": null
+  },
+  {
+   "post_url": "https://x.com/pequityresearch/status/2096668633099300972",
+   "account": "@pequityresearch",
+   "captured": "2026-09-06T18:35:00+00:00",
+   "bucket": "A",
+   "underlying_source_url": "https://ocr-helper.grok.me",
+   "publisher": "Original 10 (ocr-helper.grok.me)",
+   "source_date": null,
+   "verification": "Source fetched",
+   "owned_name_hits": [
+    "None"
+   ],
+   "anthropic_flag": false,
+   "translated_from": null
+  },
+  {
+   "post_url": "https://x.com/TheValueist/status/2096676934327439871",
+   "account": "@TheValueist",
+   "captured": "2026-09-06T19:08:00+00:00",
+   "bucket": "A",
+   "underlying_source_url": "https://docs.openclaw.ai/releases/2026.9.2",
+   "publisher": "OpenClaw",
+   "source_date": null,
+   "verification": "Source fetched",
+   "owned_name_hits": [
+    "MU",
+    "NVDA"
+   ],
+   "anthropic_flag": false,
+   "translated_from": null
+  },
+  {
+   "post_url": "https://x.com/pequityresearch/status/2096687126603854076",
+   "account": "@pequityresearch",
+   "captured": "2026-09-06T19:49:00+00:00",
+   "bucket": "B",
+   "underlying_source_url": null,
+   "publisher": "@pequityresearch",
+   "source_date": null,
+   "verification": "Unverified",
+   "owned_name_hits": [
+    "MU"
+   ],
+   "anthropic_flag": false,
+   "translated_from": null
+  },
+  {
+   "post_url": "https://x.com/pequityresearch/status/2096698746042032226",
+   "account": "@pequityresearch",
+   "captured": "2026-09-06T20:35:00+00:00",
+   "bucket": "B",
+   "underlying_source_url": null,
+   "publisher": "@pequityresearch",
+   "source_date": null,
+   "verification": "Unverified",
+   "owned_name_hits": [
+    "NVDA",
+    "COHR"
+   ],
+   "anthropic_flag": false,
+   "translated_from": null
+  },
+  {
+   "post_url": "https://x.com/wallstengine/status/2096701546243523048",
+   "account": "@wallstengine, @DrNHJ, @jukan05",
+   "captured": "2026-09-06T20:46:00+00:00",
+   "bucket": "B",
+   "underlying_source_url": null,
+   "publisher": "@wallstengine",
+   "source_date": null,
+   "verification": "Unverified",
+   "owned_name_hits": [
+    "NVDA"
+   ],
+   "anthropic_flag": false,
+   "translated_from": null
+  },
+  {
+   "post_url": "https://x.com/jukan05/status/2096729235939578161",
+   "account": "@jukan05",
+   "captured": "2026-09-06T22:36:00+00:00",
+   "bucket": "A",
+   "underlying_source_url": "https://biz.chosun.com/it-science/ict/2026/09/07/V7UWTGBE45GZ5LCMWXD3C5RQAQ/",
+   "publisher": "조선비즈 (Chosun Biz)",
+   "source_date": "2026-09-04",
+   "verification": "Source fetched",
+   "owned_name_hits": [
+    "MU",
+    "NVDA",
+    "GOOGL"
+   ],
+   "anthropic_flag": false,
+   "translated_from": null
+  },
+  {
+   "post_url": "https://x.com/pequityresearch/status/2096730663655452989",
+   "account": "@pequityresearch",
+   "captured": "2026-09-06T22:42:00+00:00",
+   "bucket": "B",
+   "underlying_source_url": null,
+   "publisher": "@pequityresearch",
+   "source_date": null,
+   "verification": "Unverified",
+   "owned_name_hits": [
+    "GOOGL"
+   ],
+   "anthropic_flag": false,
+   "translated_from": null
+  },
+  {
+   "post_url": "https://x.com/DrNHJ/status/2096741552593006766",
+   "account": "@DrNHJ, @jukan05",
+   "captured": "2026-09-06T23:25:00+00:00",
+   "bucket": "A",
+   "underlying_source_url": "https://home.imeritz.com/include/resource/research/WorkFlow/20260907073604796K_02.pdf",
+   "publisher": "메리츠증권 (Meritz Securities)",
+   "source_date": "2026-09-07",
+   "verification": "Unverified",
+   "owned_name_hits": [
+    "MU",
+    "NVDA"
+   ],
+   "anthropic_flag": false,
+   "translated_from": "Korean"
+  },
+  {
+   "post_url": "https://x.com/DrNHJ/status/2096744701949030699",
+   "account": "@DrNHJ",
+   "captured": "2026-09-06T23:37:00+00:00",
+   "bucket": "A",
+   "underlying_source_url": "https://www.hankyung.com/article/2026090668811",
+   "publisher": "한국경제 (Hankyung)",
+   "source_date": "2026-09-07",
+   "verification": "Source fetched",
+   "owned_name_hits": [
+    "None"
+   ],
+   "anthropic_flag": false,
+   "translated_from": "Korean"
+  },
+  {
+   "post_url": "https://x.com/DrNHJ/status/2096745890539315449",
+   "account": "@DrNHJ",
+   "captured": "2026-09-06T23:42:00+00:00",
+   "bucket": "A",
+   "underlying_source_url": "https://n.news.naver.com/mnews/article/015/0005329331",
+   "publisher": "한국경제 (Hankyung)",
+   "source_date": null,
+   "verification": "Source fetched",
+   "owned_name_hits": [
+    "MU"
+   ],
+   "anthropic_flag": false,
+   "translated_from": "Korean"
+  },
+  {
+   "post_url": "https://x.com/QQ_Timmy/status/2096745898495852894",
+   "account": "@QQ_Timmy",
+   "captured": "2026-09-06T23:42:00+00:00",
+   "bucket": "B",
+   "underlying_source_url": null,
+   "publisher": "@QQ_Timmy",
+   "source_date": null,
+   "verification": "Unverified",
+   "owned_name_hits": [
+    "NVDA"
+   ],
+   "anthropic_flag": false,
+   "translated_from": "Chinese"
+  },
+  {
+   "post_url": "https://x.com/DrNHJ/status/2096748594569384164",
+   "account": "@DrNHJ",
+   "captured": "2026-09-06T23:53:00+00:00",
+   "bucket": "A",
+   "underlying_source_url": "https://www.marketscale.com/industries/energy/grid-oems-are-racing-to-build-in-the-us-but-transformers-still-take-23-years",
+   "publisher": "MarketScale",
+   "source_date": "2026-09-06",
+   "verification": "Source fetched",
+   "owned_name_hits": [
+    "None"
+   ],
+   "anthropic_flag": false,
+   "translated_from": "Korean"
+  },
+  {
+   "post_url": "https://x.com/dnystedt/status/2096750434996347308",
+   "account": "@dnystedt",
+   "captured": "2026-09-07T00:00:00+00:00",
+   "bucket": "B",
+   "underlying_source_url": null,
+   "publisher": "@dnystedt",
+   "source_date": null,
+   "verification": "Unverified",
+   "owned_name_hits": [
+    "NVDA",
+    "TSM"
+   ],
+   "anthropic_flag": false,
+   "translated_from": null
+  },
+  {
+   "post_url": "https://x.com/QQ_Timmy/status/2096754606185525592",
+   "account": "@QQ_Timmy",
+   "captured": "2026-09-07T00:17:00+00:00",
+   "bucket": "B",
+   "underlying_source_url": null,
+   "publisher": "@QQ_Timmy",
+   "source_date": null,
+   "verification": "Unverified",
+   "owned_name_hits": [
+    "NVDA",
+    "AVGO"
+   ],
+   "anthropic_flag": false,
+   "translated_from": "Chinese"
+  },
+  {
+   "post_url": "https://x.com/dnystedt/status/2096757441019216254",
+   "account": "@dnystedt, @DrNHJ, @QQ_Timmy",
+   "captured": "2026-09-07T00:28:00+00:00",
+   "bucket": "A",
+   "underlying_source_url": "https://money.udn.com/money/story/5612/9738201",
+   "publisher": "經濟日報 (Economic Daily News)",
+   "source_date": "2026-09-07",
+   "verification": "Source fetched",
+   "owned_name_hits": [
+    "NVDA",
+    "TSM"
+   ],
+   "anthropic_flag": false,
+   "translated_from": null
+  },
+  {
+   "post_url": "https://x.com/pequityresearch/status/2096757339411918970",
+   "account": "@pequityresearch, @DrNHJ",
+   "captured": "2026-09-07T00:28:00+00:00",
+   "bucket": "A",
+   "underlying_source_url": "https://www.mt.co.kr/tech/2026/09/07/2026090612584118295",
+   "publisher": "머니투데이 (Money Today)",
+   "source_date": "2026-09-07",
+   "verification": "Source fetched",
+   "owned_name_hits": [
+    "MU",
+    "NVDA"
+   ],
+   "anthropic_flag": true,
+   "translated_from": null
+  },
+  {
+   "post_url": "https://x.com/dnystedt/status/2096764475508752649",
+   "account": "@dnystedt",
+   "captured": "2026-09-07T00:56:00+00:00",
+   "bucket": "B",
+   "underlying_source_url": null,
+   "publisher": "@dnystedt",
+   "source_date": null,
+   "verification": "Unverified",
+   "owned_name_hits": [
+    "MU",
+    "TSM"
+   ],
+   "anthropic_flag": false,
+   "translated_from": null
+  },
+  {
+   "post_url": "https://x.com/dnystedt/status/2096768701265834355",
+   "account": "@dnystedt",
+   "captured": "2026-09-07T01:13:00+00:00",
+   "bucket": "B",
+   "underlying_source_url": null,
+   "publisher": "@dnystedt",
+   "source_date": null,
+   "verification": "Unverified",
+   "owned_name_hits": [
+    "NVDA"
+   ],
+   "anthropic_flag": false,
+   "translated_from": null
+  },
+  {
+   "post_url": "https://x.com/pequityresearch/status/2096771964320809075",
+   "account": "@pequityresearch, @jukan05, @DrNHJ, @QQ_Timmy",
+   "captured": "2026-09-07T01:26:00+00:00",
+   "bucket": "B",
+   "underlying_source_url": null,
+   "publisher": "@pequityresearch",
+   "source_date": null,
+   "verification": "Unverified",
+   "owned_name_hits": [
+    "MU",
+    "NVDA"
+   ],
+   "anthropic_flag": false,
+   "translated_from": null
+  },
+  {
+   "post_url": "https://x.com/DrNHJ/status/2096795361570615763",
+   "account": "@DrNHJ",
+   "captured": "2026-09-07T02:59:00+00:00",
+   "bucket": "A",
+   "underlying_source_url": "https://t.me/Jstockclass/15086",
+   "publisher": "엄브렐라리서치 Jay의 주식투자교실 (Telegram channel)",
+   "source_date": null,
+   "verification": "Source fetched",
+   "owned_name_hits": [
+    "MU"
+   ],
+   "anthropic_flag": false,
+   "translated_from": "Korean"
+  },
+  {
+   "post_url": "https://x.com/TheValueist/status/2096799211245240447",
+   "account": "@TheValueist",
+   "captured": "2026-09-07T03:14:00+00:00",
+   "bucket": "B",
+   "underlying_source_url": null,
+   "publisher": "@TheValueist",
+   "source_date": null,
+   "verification": "Unverified",
+   "owned_name_hits": [
+    "MU",
+    "NVDA"
+   ],
+   "anthropic_flag": false,
+   "translated_from": null
+  },
+  {
+   "post_url": "https://x.com/pequityresearch/status/2096803896416989617",
+   "account": "@pequityresearch, @DrNHJ",
+   "captured": "2026-09-07T03:33:00+00:00",
+   "bucket": "B",
+   "underlying_source_url": null,
+   "publisher": "@pequityresearch",
+   "source_date": null,
+   "verification": "Unverified",
+   "owned_name_hits": [
+    "NVDA",
+    "COHR"
+   ],
+   "anthropic_flag": false,
+   "translated_from": null
+  },
+  {
+   "post_url": "https://x.com/DrNHJ/status/2096806570726432995",
+   "account": "@DrNHJ",
+   "captured": "2026-09-07T03:43:00+00:00",
+   "bucket": "A",
+   "underlying_source_url": "https://n.news.naver.com/mnews/article/119/0003129839?sid=001",
+   "publisher": "데일리안 (Dailian)",
+   "source_date": null,
+   "verification": "Source fetched",
+   "owned_name_hits": [
+    "None"
+   ],
+   "anthropic_flag": false,
+   "translated_from": "Korean"
+  },
+  {
+   "post_url": "https://x.com/DrNHJ/status/2096818311514497478",
+   "account": "@DrNHJ",
+   "captured": "2026-09-07T04:30:00+00:00",
+   "bucket": "A",
+   "underlying_source_url": "https://biz.chosun.com/it-science/ict/2026/09/07/AJURJOGNYRDIBDFTESKSRPVLMQ/",
+   "publisher": "조선비즈 (Chosun Biz)",
+   "source_date": "2026-09-07",
+   "verification": "Source fetched",
+   "owned_name_hits": [
+    "MU",
+    "NVDA",
+    "AVGO",
+    "GOOGL"
+   ],
+   "anthropic_flag": true,
+   "translated_from": "Korean"
+  },
+  {
+   "post_url": "https://x.com/pequityresearch/status/2096828506139136497",
+   "account": "@pequityresearch",
+   "captured": "2026-09-07T05:10:00+00:00",
+   "bucket": "B",
+   "underlying_source_url": null,
+   "publisher": "@pequityresearch",
+   "source_date": null,
+   "verification": "Unverified",
+   "owned_name_hits": [
+    "MU"
+   ],
+   "anthropic_flag": false,
+   "translated_from": null
+  },
+  {
+   "post_url": "https://x.com/QQ_Timmy/status/2096833986853322756",
+   "account": "@QQ_Timmy",
+   "captured": "2026-09-07T05:32:00+00:00",
+   "bucket": "B",
+   "underlying_source_url": null,
+   "publisher": "@QQ_Timmy",
+   "source_date": null,
+   "verification": "Unverified",
+   "owned_name_hits": [
+    "NVDA"
+   ],
+   "anthropic_flag": false,
+   "translated_from": "Chinese"
+  },
+  {
+   "post_url": "https://x.com/jukan05/status/2096837364517921139",
+   "account": "@jukan05, @QQ_Timmy",
+   "captured": "2026-09-07T05:45:00+00:00",
+   "bucket": "A",
+   "underlying_source_url": "https://zdnet.co.kr/view/?no=20260907110055",
+   "publisher": "ZDNet Korea",
+   "source_date": "2026-09-07",
+   "verification": "Source fetched",
+   "owned_name_hits": [
+    "NVDA",
+    "AVGO"
+   ],
+   "anthropic_flag": false,
+   "translated_from": null
+  },
+  {
+   "post_url": "https://x.com/TheValueist/status/2096838443741347978",
+   "account": "@TheValueist",
+   "captured": "2026-09-07T05:50:00+00:00",
+   "bucket": "B",
+   "underlying_source_url": null,
+   "publisher": "@TheValueist",
+   "source_date": null,
+   "verification": "Unverified",
+   "owned_name_hits": [
+    "TSM"
+   ],
+   "anthropic_flag": false,
+   "translated_from": null
+  },
+  {
+   "post_url": "https://x.com/QQ_Timmy/status/2096840919593152667",
+   "account": "@QQ_Timmy",
+   "captured": "2026-09-07T06:00:00+00:00",
+   "bucket": "B",
+   "underlying_source_url": null,
+   "publisher": "@QQ_Timmy",
+   "source_date": null,
+   "verification": "Unverified",
+   "owned_name_hits": [
+    "NVDA",
+    "COHR"
+   ],
+   "anthropic_flag": false,
+   "translated_from": "Chinese"
+  },
+  {
+   "post_url": "https://x.com/TheValueist/status/2096841567751250102",
+   "account": "@TheValueist",
+   "captured": "2026-09-07T06:02:00+00:00",
+   "bucket": "A",
+   "underlying_source_url": "https://www.reuters.com/business/energy/ship-fuel-shortage-looms-refiners-strained-by-war-favour-other-products-2026-09-07/",
+   "publisher": "Reuters",
+   "source_date": null,
+   "verification": "Unverified",
+   "owned_name_hits": [
+    "None"
+   ],
+   "anthropic_flag": false,
+   "translated_from": null
+  },
+  {
+   "post_url": "https://x.com/QQ_Timmy/status/2096855991262343190",
+   "account": "@QQ_Timmy",
+   "captured": "2026-09-07T07:00:00+00:00",
+   "bucket": "A",
+   "underlying_source_url": "https://counterpointresearch.com/en/insights/robotaxi-global-leaders-autonomous-mobility-2026",
+   "publisher": "Counterpoint Research",
+   "source_date": "2026-06-16",
+   "verification": "Source fetched",
+   "owned_name_hits": [
+    "None"
+   ],
+   "anthropic_flag": false,
+   "translated_from": "Chinese"
+  },
+  {
+   "post_url": "https://x.com/jukan05/status/2096908177271033916",
+   "account": "@jukan05",
+   "captured": "2026-09-07T10:27:00+00:00",
+   "bucket": "A",
+   "underlying_source_url": "https://www.thelec.kr/news/articleView.html?idxno=61915",
+   "publisher": "디일렉 (THE ELEC)",
+   "source_date": "2026-09-07",
+   "verification": "Source fetched",
+   "owned_name_hits": [
+    "TSM",
+    "AVGO"
+   ],
+   "anthropic_flag": false,
+   "translated_from": null
+  },
+  {
+   "post_url": "https://x.com/DrNHJ/status/2096935231895064745",
+   "account": "@DrNHJ",
+   "captured": "2026-09-07T12:14:00+00:00",
+   "bucket": "A",
+   "underlying_source_url": "https://money.udn.com/money/story/5710/9739533",
+   "publisher": "經濟日報 (Economic Daily News)",
+   "source_date": "2026-09-07",
+   "verification": "Source fetched",
+   "owned_name_hits": [
+    "NVDA"
+   ],
+   "anthropic_flag": false,
+   "translated_from": "Korean"
+  },
+  {
+   "post_url": "https://x.com/pequityresearch/status/2096950109745594376",
+   "account": "@pequityresearch",
+   "captured": "2026-09-07T13:14:00+00:00",
+   "bucket": "B",
+   "underlying_source_url": null,
+   "publisher": "@pequityresearch",
+   "source_date": null,
+   "verification": "Unverified",
+   "owned_name_hits": [
+    "NVDA",
+    "COHR"
+   ],
+   "anthropic_flag": false,
+   "translated_from": null
+  },
+  {
+   "post_url": "https://x.com/pequityresearch/status/2096965460659212646",
+   "account": "@pequityresearch",
+   "captured": "2026-09-07T14:15:00+00:00",
+   "bucket": "B",
+   "underlying_source_url": null,
+   "publisher": "@pequityresearch",
+   "source_date": null,
+   "verification": "Unverified",
+   "owned_name_hits": [
+    "ASML"
+   ],
+   "anthropic_flag": false,
+   "translated_from": null
+  },
+  {
+   "post_url": "https://x.com/jukan05/status/2096967899537907945",
+   "account": "@jukan05",
+   "captured": "2026-09-07T14:24:00+00:00",
+   "bucket": "A",
+   "underlying_source_url": "https://www.greened.kr/news/articleView.html?idxno=349245",
+   "publisher": "녹색경제신문 (Greened)",
+   "source_date": "2026-09-04",
+   "verification": "Source fetched",
+   "owned_name_hits": [
+    "None"
+   ],
+   "anthropic_flag": false,
+   "translated_from": null
+  },
+  {
+   "post_url": "https://x.com/pequityresearch/status/2096996103304483131",
+   "account": "@pequityresearch",
+   "captured": "2026-09-07T16:16:00+00:00",
+   "bucket": "B",
+   "underlying_source_url": null,
+   "publisher": "@pequityresearch",
+   "source_date": null,
+   "verification": "Unverified",
+   "owned_name_hits": [
+    "COHR"
+   ],
+   "anthropic_flag": false,
+   "translated_from": null
+  },
+  {
+   "post_url": "https://x.com/pequityresearch/status/2097010004226195633",
+   "account": "@pequityresearch",
+   "captured": "2026-09-07T17:12:00+00:00",
+   "bucket": "B",
+   "underlying_source_url": null,
+   "publisher": "@pequityresearch",
+   "source_date": null,
+   "verification": "Unverified",
+   "owned_name_hits": [
+    "MU"
+   ],
+   "anthropic_flag": false,
+   "translated_from": null
+  },
+  {
+   "post_url": "https://x.com/pequityresearch/status/2097042216405631260",
+   "account": "@pequityresearch",
+   "captured": "2026-09-07T19:20:00+00:00",
+   "bucket": "B",
+   "underlying_source_url": null,
+   "publisher": "@pequityresearch",
+   "source_date": null,
+   "verification": "Unverified",
+   "owned_name_hits": [
+    "NVDA"
+   ],
+   "anthropic_flag": false,
+   "translated_from": null
+  }
+ ]
+}

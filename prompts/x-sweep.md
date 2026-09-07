@@ -1,4 +1,4 @@
-X Sweep — prompt v1.2 — 2026-09-07
+X Sweep — prompt v1.3 — 2026-09-07
 Source of truth: Notion page 3d431d4f-7b77-8192-9901-ccd6e91ca9ab, until this file supersedes it.
 
 ROLE
@@ -14,7 +14,7 @@ INPUTS
 
 MATCHING RULES (apply to both tables below)
 - Whole-word, case-insensitive, with an optional trailing "s". "data centers" matches "data center".
-- A term ending in a letter also matches a trailing digit/letter suffix: HBM matches HBM3E and HBM4; LPDDR matches LPDDR6; DDR matches DDR5.
+- A term ending in a letter also matches a suffix that STARTS WITH A DIGIT: HBM matches HBM3E and HBM4; LPDDR matches LPDDR6; DDR matches DDR5. A suffix starting with a letter does NOT match: Meta does not match "metal", PIC does not match "Picture", ASE does not match "ASEAN".
 - Plain substring matching is BARRED. It produces false hits (Meta in "metal", ASE in "increase", TPU in "output").
 - CJK strings match as substrings, since those scripts have no word boundaries.
 - Match against the post text, the post's note_tweet if present, AND the quoted post's text. Matching reads the quoted post; the Headline does not.
@@ -76,7 +76,7 @@ Status: Pending Review. Classification: Unclassified. Gate Impact, Source Discou
 STEP 6 - DEDUP AND CAP
 - Against existing Signal Inbox rows: match on Post URL, then on cleaned Underlying Source URL. If found, do not create a row; append the new @handle to Account and count it.
 - Within this run: same cleaned Underlying Source URL, or the same Dated Claim from different accounts -> one row. The EARLIEST post wins; its Post URL survives; all handles go in Account.
-- If bucket-B rows exceed NIGHTLY_CAP_NOLINK: keep rows with an Owned-Name Hit first, then most recent, to the cap. List every dropped post (@handle, Post URL) in the run row.
+- A bucket-B row carrying a live Owned-Name Hit is NEVER dropped. The cap applies only to bucket-B rows with Owned-Name Hits = None; keep the most recent of those up to NIGHTLY_CAP_NOLINK and drop the rest. List every dropped post (@handle, Post URL) in the run row, and report both counts: rows kept on an owned-name hit, and rows kept under the cap.
 
 STEP 7 - WRITE, THEN BRIDGE
 a. Write all Signal Inbox rows in one batched call.
