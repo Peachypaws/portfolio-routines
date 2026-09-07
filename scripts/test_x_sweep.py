@@ -12,9 +12,11 @@ committed. So this is not an end-to-end replay of dry run 2. What it does:
   2. runs the script end to end, offline, over a synthetic pull built to the
      shapes dry run 2 described (same-author link reply, cross-bucket dedup,
      bogus expanded URL, PDF, tracking params);
-  3. replays Step 6's cap over dry run 2's real post-dedup bucket-B
-     distribution (49 with an owned-name hit / 28 without) under both the v1.2
-     and the v1.3 rule, and reports the difference;
+  3. checks the reference arithmetic for prompt Step 6c over dry run 2's real
+     post-dedup bucket-B distribution (49 with an owned-name hit / 28 without)
+     under both the old and the ruled cap. The SCRIPT DOES NOT CAP - Step 6c is
+     the model's and runs after 6b - so both rules are implemented here, in the
+     test file, purely to hold the numbers in the run note honest;
   4. checks the 62 rows dry run 2 actually filed - read back from Notion into
      scripts/fixtures/dry-run-2-signal-inbox.json - against the script's
      record contract, field by field.
@@ -55,13 +57,13 @@ def eq(got, want, label):
 def test_matching():
     m = xs.Matcher()
 
-    # Prompt v1.3 rule 1, positive: suffix that starts with a digit.
+    # Ruled suffix rule, positive: suffix that starts with a digit.
     for text, want in [("HBM3E base dies", ["HBM"]), ("HBM4 ramp", ["HBM"]),
                        ("LPDDR6 supply", ["LPDDR"]), ("DDR5 pricing", ["DDR"])]:
         hits = m.layer_hits(text)
         check(all(w in hits for w in want), "suffix-digit", "%r -> %r" % (text, hits))
 
-    # Prompt v1.3 rule 1, negative: suffix that starts with a letter.
+    # Ruled suffix rule, negative: suffix that starts with a letter.
     for term, text in [("Meta", "metal prices"), ("PIC", "Picture this"),
                        ("ASE", "ASEAN summit"), ("ASE", "an increase"),
                        ("TPU", "the output"), ("UPS", "upside risk")]:
@@ -97,6 +99,11 @@ def test_matching():
 
     # Barred substring: 'Meta' inside 'metal' must not tag anything.
     eq(m.owned_hits("copper and metal demand"), [], "no-false-owned-hit")
+
+    # Anthropic Flag strings, ruled 2026-09-07: these three and no others.
+    eq(xs.ANTHROPIC_STRINGS, ["Anthropic", "Claude", "앤트로픽"], "anthropic-strings")
+    check("앱트로픽" not in xs.ANTHROPIC_STRINGS, "wrong-hangul-removed")
+    check("安人比" not in xs.ANTHROPIC_STRINGS, "unsubstantiated-han-removed")
 
     # Translated From reads the post's script.
     eq(xs.detect_script("삼성 파운드리"), "Korean", "script-korean")
@@ -194,11 +201,16 @@ def test_parser():
 
 
 # --------------------------------------------------------------------------
-# 4. Step 6 cap: v1.2 rule vs v1.3 rule, on dry run 2's real distribution
+# 4. Step 6c cap - REFERENCE ARITHMETIC ONLY
+#
+# x_sweep.py does not cap. Step 6c belongs to the model and runs after Step 6b
+# (claim-level dedup), because capping first drops rows that were about to
+# merge. Both rules are implemented below, in this file, so the 62 -> 111
+# figure in notes/runs/2026-09-07-x-sweep-script-test.md stays checkable.
 # --------------------------------------------------------------------------
 
-def _apply_cap_v12(records, cap):
-    """The rule prompt v1.2 carried, for comparison only.
+def _apply_cap_old(records, cap):
+    """The rule the prompt carried before 2026-09-07.
 
     'keep rows with an Owned-Name Hit first, then most recent, to the cap.'
     """
@@ -207,6 +219,30 @@ def _apply_cap_v12(records, cap):
     b_rows.sort(key=lambda r: (r["owned_name_hits"] != ["None"], r["captured"] or ""),
                 reverse=True)
     return a_rows + b_rows[:cap], b_rows[cap:]
+
+
+def _apply_cap_ruled(records, cap):
+    """prompt v1.4 Step 6c.
+
+    A bucket-B row carrying a live Owned-Name Hit is NEVER dropped. The cap
+    applies only to bucket-B rows with Owned-Name Hits = None: keep the most
+    recent of those up to NIGHTLY_CAP_NOLINK and drop the rest.
+    """
+    kept, no_hit, kept_on_owned_name = [], [], 0
+    for r in records:
+        if r["bucket"] != "B":
+            kept.append(r)
+        elif r["owned_name_hits"] != ["None"]:
+            kept.append(r)
+            kept_on_owned_name += 1
+        else:
+            no_hit.append(r)
+    no_hit.sort(key=lambda r: (r["captured"] or "", r["post_url"]), reverse=True)
+    kept.extend(no_hit[:cap])
+    return kept, no_hit[cap:], {
+        "bucket_b_kept_on_owned_name_hit": kept_on_owned_name,
+        "bucket_b_kept_under_cap": len(no_hit[:cap]),
+    }
 
 
 def _synth_b(n_hit, n_nohit):
@@ -231,30 +267,34 @@ def test_cap():
                "owned_name_hits": ["None"]} for i in range(37)]
     all_rows = a_rows + b_rows
 
-    old_kept, old_dropped = _apply_cap_v12(list(all_rows), 25)
-    eq(len(old_kept), 62, "v1.2-total-kept")
-    eq(len(old_dropped), 52, "v1.2-dropped")
-    eq(sum(1 for r in old_kept if r["bucket"] == "B"), 25, "v1.2-bucket-b-kept")
+    old_kept, old_dropped = _apply_cap_old(list(all_rows), 25)
+    eq(len(old_kept), 62, "old-cap-total-kept")
+    eq(len(old_dropped), 52, "old-cap-dropped")
+    eq(sum(1 for r in old_kept if r["bucket"] == "B"), 25, "old-cap-bucket-b-kept")
     eq(sum(1 for r in old_dropped if r["owned_name_hits"] != ["None"]), 24,
-       "v1.2-dropped-with-owned-hit")
+       "old-cap-dropped-with-owned-hit")
 
-    new_kept, new_dropped, counts = xs.apply_cap(list(all_rows), 25)
-    eq(len(new_kept), 111, "v1.3-total-kept")
-    eq(len(new_dropped), 3, "v1.3-dropped")
-    eq(counts["bucket_b_kept_on_owned_name_hit"], 49, "v1.3-kept-on-owned-hit")
-    eq(counts["bucket_b_kept_under_cap"], 25, "v1.3-kept-under-cap")
+    new_kept, new_dropped, counts = _apply_cap_ruled(list(all_rows), 25)
+    eq(len(new_kept), 111, "ruled-cap-total-kept")
+    eq(len(new_dropped), 3, "ruled-cap-dropped")
+    eq(counts["bucket_b_kept_on_owned_name_hit"], 49, "ruled-cap-kept-on-owned-hit")
+    eq(counts["bucket_b_kept_under_cap"], 25, "ruled-cap-kept-under-cap")
     eq(sum(1 for r in new_dropped if r["owned_name_hits"] != ["None"]), 0,
-       "v1.3-never-drops-an-owned-hit")
+       "ruled-cap-never-drops-an-owned-hit")
 
     # The cap keeps the MOST RECENT of the no-hit rows.
     dropped_at = sorted(r["captured"] for r in new_dropped)
     kept_nohit = sorted(r["captured"] for r in new_kept
                         if r["bucket"] == "B" and r["owned_name_hits"] == ["None"])
-    check(max(dropped_at) <= min(kept_nohit), "v1.3-drops-the-oldest",
+    check(max(dropped_at) <= min(kept_nohit), "ruled-cap-drops-the-oldest",
           "%s vs %s" % (max(dropped_at), min(kept_nohit)))
 
     # A bucket-A row is never touched by the cap.
     eq(sum(1 for r in new_kept if r["bucket"] == "A"), 37, "cap-ignores-bucket-a")
+
+    # The script itself must expose no cap at all.
+    check(not hasattr(xs, "apply_cap"), "script-has-no-apply-cap")
+    check(not hasattr(xs, "NIGHTLY_CAP_NOLINK"), "script-has-no-cap-constant")
 
 
 # --------------------------------------------------------------------------
@@ -277,47 +317,42 @@ def test_dedup():
              src, ["NVDA"], "@dnystedt")
     b = _rec("https://x.com/DrNHJ/status/2", "2026-09-07T02:46:57.000Z", "A",
              src, ["TSM"], "@DrNHJ")
-    kept, clusters, filed = xs.dedup([a, b], [], None)
+    kept, clusters, filed = xs.dedup([a, b], [])
     eq(len(kept), 1, "url-dedup-one-row")
     eq(kept[0]["post_url"], "https://x.com/dnystedt/status/1", "earliest-post-wins")
     eq(kept[0]["account"], ["@dnystedt", "@DrNHJ"], "handles-merged")
     eq(kept[0]["owned_name_hits"], ["NVDA", "TSM"], "hits-unioned")
     eq(len(clusters), 1, "one-cluster")
 
-    # Cross-bucket merge keeps the resolved source (dry run 2, decision (f)):
-    # the earlier post is bucket B with no URL, and must not discard the URL.
+    # A no-link candidate never joins a linked one at 6a - there is no shared
+    # URL to join on. That is Step 6b's job, and the prompt states the rule
+    # there. Both survive here.
     nolink = _rec("https://x.com/QQ_Timmy/status/3", "2026-09-06T23:00:00.000Z",
                   "B", None, ["NVDA"], "@QQ_Timmy")
     withlink = _rec("https://x.com/DrNHJ/status/4", "2026-09-07T01:00:00.000Z",
                     "A", src, ["TSM"], "@DrNHJ")
-    kept, clusters, _ = xs.dedup([nolink, withlink], [],
-                                 [["https://x.com/QQ_Timmy/status/3",
-                                   "https://x.com/DrNHJ/status/4"]])
-    eq(len(kept), 1, "cross-bucket-one-row")
-    eq(kept[0]["post_url"], "https://x.com/QQ_Timmy/status/3", "cross-bucket-earliest-url")
-    eq(kept[0]["underlying_source_url"], src, "cross-bucket-keeps-source")
-    eq(kept[0]["bucket"], "A", "cross-bucket-becomes-a")
+    kept, clusters, _ = xs.dedup([nolink, withlink], [])
+    eq(len(kept), 2, "6a-does-not-join-no-link-to-linked")
+    eq(len(clusters), 0, "6a-no-cross-bucket-cluster")
 
     # Against existing Signal Inbox rows: Post URL, then cleaned source URL.
     existing = [{"post_url": "https://x.com/dnystedt/status/1",
                  "underlying_source_url": None},
                 {"post_url": "https://x.com/other/status/9",
                  "underlying_source_url": src + "?utm_source=x"}]
-    kept, _, filed = xs.dedup([a, b], existing, None)
+    kept, _, filed = xs.dedup([a, b], existing)
     eq(len(kept), 0, "both-already-filed")
     eq(len(filed), 2, "already-filed-counted")
 
-    # The Dated-Claim arm is declared, not silently skipped.
+    # Two accounts pasting the same claim link-free survive 6a untouched. Only
+    # Step 6b can collapse them, and Step 6b is the model's.
     c1 = _rec("https://x.com/DeItaone/status/5", "2026-09-07T15:36:24.000Z", "B",
               None, ["None"], "@DeItaone")
     c2 = _rec("https://x.com/TheValueist/status/6", "2026-09-07T16:40:32.000Z", "B",
               None, ["None"], "@TheValueist")
-    kept, _, _ = xs.dedup([c1, c2], [], None)
-    eq(len(kept), 2, "no-link-pair-not-deduped-without-model")
-    kept, _, _ = xs.dedup([c1, c2], [], [["https://x.com/DeItaone/status/5",
-                                          "https://x.com/TheValueist/status/6"]])
-    eq(len(kept), 1, "model-groups-fold-in")
-    eq(kept[0]["account"], ["@DeItaone", "@TheValueist"], "model-group-handles")
+    kept, _, _ = xs.dedup([c1, c2], [])
+    eq(len(kept), 2, "no-link-pair-survives-6a")
+    check(not hasattr(xs, "apply_cap"), "no-cap-in-dedup-path")
 
 
 # --------------------------------------------------------------------------
@@ -429,6 +464,12 @@ def test_end_to_end():
             _tweet("105", "u4", "$FCX entry around 62", "2026-09-07T07:00:00.000Z"),
             # bucket C: keyword but no digit anywhere
             _tweet("106", "u4", "CXMT and Apple", "2026-09-07T06:00:00.000Z"),
+            # Anthropic Flag, Korean: the ruled string fires...
+            _tweet("107", "u3", "앤트로픽 HBM4 계약 517조원",
+                   "2026-09-07T08:30:00.000Z"),
+            # ...and the character the old prompt had does not.
+            _tweet("108", "u3", "앱트로픽 HBM4 계약 517조원",
+                   "2026-09-07T08:31:00.000Z"),
         ],
         "includes": {"users": [
             {"id": "u1", "username": "DrNHJ"}, {"id": "u2", "username": "jukan05"},
@@ -442,8 +483,7 @@ def test_end_to_end():
 
     rc = subprocess.call([sys.executable, os.path.join(HERE, "x_sweep.py"),
                           "--posts", posts_file, "--offline",
-                          "--pages-dir", pages_dir, "--out", out_file,
-                          "--cap", "25"],
+                          "--pages-dir", pages_dir, "--out", out_file],
                          stderr=subprocess.PIPE)
     eq(rc, 0, "e2e-exit-code")
     with io.open(out_file, encoding="utf-8") as fh:
@@ -454,11 +494,15 @@ def test_end_to_end():
 
     eq(meta["merges"]["count"], 1, "e2e-merge-count")
     eq(meta["discarded_bucket_c"]["count"], 2, "e2e-bucket-c")
-    eq(meta["buckets_final"], {"A": 2, "B": 2}, "e2e-buckets")
-    eq(meta["posts_pulled"], 7, "e2e-posts")
+    eq(meta["buckets_post_dedup"], {"A": 2, "B": 4}, "e2e-buckets")
+    check("cap" not in meta, "e2e-meta-has-no-cap")
+    check("dropped_by_cap" not in meta, "e2e-meta-has-no-dropped-by-cap")
+    check(meta["step_6b_claim_dedup"].startswith("NOT PERFORMED"), "e2e-6b-declared")
+    check(meta["step_6c_cap"].startswith("NOT APPLIED"), "e2e-6c-declared")
+    eq(meta["posts_pulled"], 9, "e2e-posts")
     eq(meta["oldest_created_at"], "2026-09-07T06:00:00.000Z", "e2e-oldest")
     eq(meta["newest_created_at"], "2026-09-07T12:14:00.000Z", "e2e-newest")
-    eq(meta["newest_post_id"], "106", "e2e-newest-id")
+    eq(meta["newest_post_id"], "108", "e2e-newest-id")
 
     king = by_url["https://x.com/DrNHJ/status/100"]
     eq(king["underlying_source_url"], udn, "e2e-tracking-params-stripped")
@@ -485,6 +529,15 @@ def test_end_to_end():
 
     copper = by_url["https://x.com/dnystedt/status/104"]
     eq(copper["owned_name_hits"], ["None"], "e2e-no-owned-hit")
+    # A no-hit bucket-B candidate survives: the script does not cap.
+    eq(meta["candidates_out"], 6, "e2e-every-candidate-survives")
+
+    # Anthropic Flag: only the ruled Korean string fires.
+    good = by_url["https://x.com/dnystedt/status/107"]
+    bad = by_url["https://x.com/dnystedt/status/108"]
+    eq(good["anthropic_flag"], True, "e2e-anthropic-flag-fires-on-ruled-string")
+    eq(good["translated_from"], "Korean", "e2e-anthropic-post-korean")
+    eq(bad["anthropic_flag"], False, "e2e-anthropic-flag-silent-on-old-string")
 
     # Nothing in the output sets Layer, Headline, Dated Claim or Status.
     for rec in recs:
@@ -584,13 +637,14 @@ def test_fixture_contract():
         check(row["translated_from"] in (None, "Korean", "Chinese", "Japanese"),
               "filed-translated-from", row["post_url"])
 
-    # Under the v1.3 cap, none of these 25 filed bucket-B rows would be capped:
-    # every one carries a live owned-name hit.
-    kept, dropped, counts = xs.apply_cap(
+    # Under the ruled cap, none of these 25 filed bucket-B rows would be
+    # capped: every one carries a live owned-name hit. (Reference arithmetic -
+    # the script does not cap.)
+    kept, dropped, counts = _apply_cap_ruled(
         [dict(r, account=[r["account"]]) for r in rows], 25)
-    eq(len(dropped), 0, "v1.3-drops-none-of-the-filed-62")
-    eq(counts["bucket_b_kept_on_owned_name_hit"], 25, "v1.3-filed-b-all-on-owned-hit")
-    eq(counts["bucket_b_kept_under_cap"], 0, "v1.3-filed-none-under-cap")
+    eq(len(dropped), 0, "ruled-cap-drops-none-of-the-filed-62")
+    eq(counts["bucket_b_kept_on_owned_name_hit"], 25, "filed-b-all-on-owned-hit")
+    eq(counts["bucket_b_kept_under_cap"], 0, "filed-none-under-cap")
 
 
 def main():

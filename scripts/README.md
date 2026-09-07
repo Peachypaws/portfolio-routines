@@ -2,9 +2,13 @@
 
 ## `x_sweep.py` — the mechanical half of the X Sweep
 
-Implements Steps 1–6 of `prompts/x-sweep.md` (v1.3): pull with pagination and
-high-water mark, same-author reply merge, bucket A/B/C, fetch, parse, URL
-tracking-param strip, dedup, cap. Standard library only, Python 3.8+.
+Implements Steps 1 through **6a** of `prompts/x-sweep.md` (v1.4): pull with
+pagination and high-water mark, same-author reply merge, bucket A/B/C, fetch,
+parse, URL tracking-param strip, URL-level dedup. Standard library only,
+Python 3.8+.
+
+Then it stops. `candidates.json` carries **every surviving candidate,
+uncapped.**
 
 Writes one `candidates.json`:
 
@@ -15,9 +19,9 @@ Writes one `candidates.json`:
   fetched_page_path}]}
 ```
 
-`meta` carries page counts, merge count, bucket counts, dedup clusters, the
-dropped-by-cap list, fetch failures with HTTP status, parse failures, and
-oldest/newest `created_at`.
+`meta` carries page counts, merge count, bucket counts, URL-dedup clusters,
+already-filed collisions, fetch failures with HTTP status, parse failures, and
+oldest/newest `created_at`. It has no cap keys — see below.
 
 ### What it does not do
 
@@ -31,10 +35,16 @@ It decides nothing a model should decide.
   short-circuited on a PDF). `null` means the fetch produced readable text and
   the model must choose between `Source fetched` and `Unverified` — "Source
   fetched" means the fetch *confirmed the claim*, which is a reading judgment.
-- **Dedup on Dated Claim is not performed.** The script dedups on Post URL and
-  on cleaned Underlying Source URL. It cannot compare a field it does not
-  write. Hand the model's clusters back with `--merged-groups` (a JSON list of
-  lists of Post URLs) and re-run Step 6.
+- **Step 6 stops at 6a.** The script dedups on Post URL and on cleaned
+  Underlying Source URL, and that is all. It does not run 6b (claim-level
+  dedup) — it cannot compare a field it does not write — and it does not run
+  6c (the cap).
+
+  **The order matters and the prompt states it: 6a, then 6b, then 6c.** Capping
+  before claim-level dedup counts duplicates against the limit and drops rows
+  that were about to merge into a surviving row — and the copy it drops may be
+  the one carrying a handle, an owned-name hit, or the cluster's only resolved
+  source URL. So the script hands over everything and the model caps last.
 - **`translated_from` reads the post's script only.** The "or says it is a
   translation" arm of the rule is left to the model.
 
@@ -47,9 +57,9 @@ python3 scripts/x_sweep.py --high-water-mark <last run row's mark> --out candida
 # offline replay over saved pages, no API calls
 python3 scripts/x_sweep.py --posts pulled.json --offline --pages-dir pages --out candidates.json
 
-# fold the model's Dated-Claim clusters back into Step 6
+# dedup against rows already in the Signal Inbox
 python3 scripts/x_sweep.py --posts pulled.json --offline --pages-dir pages \
-    --merged-groups clusters.json --existing signal-inbox.json --out candidates.json
+    --existing signal-inbox.json --out candidates.json
 ```
 
 Every fetched page is saved under `--pages-dir` with a `manifest.json`, so a
@@ -65,7 +75,11 @@ sends no token of its own unless `X_BEARER_TOKEN` is set.
 
 ### Tests
 
-`python3 scripts/test_x_sweep.py` — offline, no network. 1260 checks.
+`python3 scripts/test_x_sweep.py` — offline, no network. 1290 checks.
+
+The suite also holds both cap rules as reference arithmetic for prompt Step 6c,
+so the 62 → 111 figure in the run note stays checkable. The script itself has
+no cap and the suite asserts that.
 
 `fixtures/dry-run-2-signal-inbox.json` holds the mechanical fields of the 62
 rows dry run 2 filed, read back from Notion. Dry run 2's **inputs** — the 265
@@ -76,8 +90,9 @@ See `notes/runs/2026-09-07-x-sweep-script-test.md`.
 ## Unruled carry-overs
 
 These come from dry run 2's "Decisions taken, not followed from the prompt".
-Only decision (a) has been ruled (it is now the v1.3 suffix rule). The rest are
-implemented as dry run 2 implemented them, and still need a CEO ruling:
+(a) has been ruled — it is now the suffix rule. (f) has been folded into the
+prompt as a Step 6b rule. The rest are implemented as dry run 2 implemented
+them, and still need a CEO ruling:
 
 | | Decision | How the script implements it |
 |---|---|---|
@@ -85,18 +100,22 @@ implemented as dry run 2 implemented them, and still need a CEO ruling:
 | (c) | Bogus expanded URL | A host that does not resolve at all is not a source: the candidate falls back to bucket B. A refused, reset or timed-out connection is a real host and stays in bucket A, Unverified — which is what dry run 2 did with the Sina Finance URL. |
 | (d) | Shortener resolved | Redirects are followed and the final URL is recorded. |
 | (e) | Fragment stripped | A fragment that is entirely tracking `key=value` pairs is stripped; an ordinary anchor is kept. |
-| (f) | Cross-bucket merge keeps the source | A dedup cluster that joins a bucket-B row to a bucket-A row keeps the earliest Post URL **and** the resolved source URL. |
+| (f) | Cross-bucket merge keeps the source | Now a Step 6b rule, stated in the prompt: a cluster joining a no-link row to one with a resolved source keeps the earliest Post URL **and** that source URL. It cannot arise at 6a — every member of a URL cluster carries the same URL. |
 | (g) | "Source fetched" means read and confirmed | A PDF that downloaded but was not read files Unverified. |
 
-Two more things the script surfaces rather than fixes:
+## Ruled 2026-09-07 — do not "fix" these back
 
-- **The Anthropic Flag strings look wrong.** The prompt lists `앱트로픽` and
-  `安人比`. Dry run 1 found `앤트로픽` on a source page — a different word. The
-  script matches the prompt verbatim, because correcting a match string is a
-  rule change. Worth a ruling.
-- **The bucket-B digit gate now reads the quoted post.** The prompt's MATCHING
-  RULES say to match against the post text, the note_tweet, *and* the quoted
-  post's text; Step 3B gates on "the matched text". The script follows that.
-  Dry run 1 excluded the quoted post from the digit check and discarded two
-  posts as bucket C for it (defects: posts 5 and 17). Under the prompt as
-  written those posts are bucket B. This will widen bucket B on a live run.
+- **Anthropic Flag strings are `Anthropic`, `Claude`, `앤트로픽`. Three strings,
+  no others.** The earlier list carried `앱트로픽` — wrong character, the word
+  is 앤트로픽 — and `安人比`, which is not a rendering of Anthropic anyone could
+  substantiate. Both are gone. Do not re-add them.
+
+- **The bucket-B digit gate reads the quoted post, and that is correct.**
+  "Matched text" is the full set from MATCHING RULES: post text, note_tweet,
+  **and** the quoted post. The digit may come from the quoted post, and so may
+  the matched string. Dry run 1 narrowed this to the post text alone and threw
+  away two live candidates for it (its posts 5 and 17 — "the 30-40 min is in
+  the quoted post", "LPDDR6 is in the quoted Chinese post"). **That narrowing
+  was the bug, not the fix.** It will widen bucket B on a live run; that is the
+  intended effect. If a future run shows bucket B growing and someone reaches
+  for the post-text-only reading, this is the note saying no.

@@ -1,4 +1,4 @@
-X Sweep — prompt v1.3 — 2026-09-07
+X Sweep — prompt v1.4 — 2026-09-07
 Source of truth: Notion page 3d431d4f-7b77-8192-9901-ccd6e91ca9ab, until this file supersedes it.
 
 ROLE
@@ -52,6 +52,7 @@ Chains deeper than two merge the same way. Count every merge in the run row. Thi
 STEP 3 - BUCKET
 A. The candidate has an external URL (an expanded_url not on x.com or twitter.com) -> candidate.
 B. No external URL, but the matched text contains at least one digit AND at least one string from the OWNED-NAME MATCH TABLE or LAYER KEYWORDS -> candidate, no-link.
+   "Matched text" is the full set defined in MATCHING RULES: the post text, the note_tweet, AND the quoted post's text. The digit may come from the quoted post, and so may the matched string. Do NOT narrow this gate to the post text alone - dry run 1 did, and discarded two live candidates for it.
 C. Neither -> discard, count, record the account.
 
 STEP 4 - RESOLVE THE UNDERLYING SOURCE (bucket A only)
@@ -70,13 +71,42 @@ Dated Claim: the verbatim figure with the interested party named, or "none".
 Translated From: Korean / Chinese / Japanese if the POST text is in that script or says it is a translation; otherwise blank. Do not set it from the source's language - the review does that.
 Owned-Name Hits: from the match table only, or "None" explicitly. Never infer a name from a product or a supplier relationship.
 LAYER: LEAVE BLANK ALWAYS. Layer assignment is a judgment call and belongs to the Weekly Signal Review.
-Anthropic Flag: tick if the matched text or the fetched source body contains Anthropic, Claude, 앱트로픽, or 安人比. Sidebars and related-links blocks do not count.
+Anthropic Flag: tick if the matched text or the fetched source body contains Anthropic, Claude, or 앤트로픽. These three strings and no others. Sidebars and related-links blocks do not count.
 Status: Pending Review. Classification: Unclassified. Gate Impact, Source Discount, Second Source URL, Reviewed On, Bridged to TMF: blank.
 
-STEP 6 - DEDUP AND CAP
-- Against existing Signal Inbox rows: match on Post URL, then on cleaned Underlying Source URL. If found, do not create a row; append the new @handle to Account and count it.
-- Within this run: same cleaned Underlying Source URL, or the same Dated Claim from different accounts -> one row. The EARLIEST post wins; its Post URL survives; all handles go in Account.
-- A bucket-B row carrying a live Owned-Name Hit is NEVER dropped. The cap applies only to bucket-B rows with Owned-Name Hits = None; keep the most recent of those up to NIGHTLY_CAP_NOLINK and drop the rest. List every dropped post (@handle, Post URL) in the run row, and report both counts: rows kept on an owned-name hit, and rows kept under the cap.
+STEP 6 - DEDUP AND CAP, IN THIS ORDER: 6a, THEN 6b, THEN 6c
+The order is a rule, not a suggestion. NEVER cap before 6b. Capping first
+counts duplicates against the limit and drops rows that were about to merge
+into a surviving row - and the copy it drops may be the one carrying a handle,
+an owned-name hit, or the only resolved source URL in the cluster. Dedup all
+the way down first; cap what is left.
+
+6a. URL-LEVEL DEDUP - mechanical
+    scripts/x_sweep.py has already done this if you ran it; its output is
+    post-6a and pre-6b.
+    - Against existing Signal Inbox rows: match on Post URL, then on cleaned
+      Underlying Source URL. If found, do not create a row; append the new
+      @handle to Account and count it.
+    - Within this run: same cleaned Underlying Source URL -> one row.
+    - The EARLIEST post wins; its Post URL survives; all handles go in Account.
+    - A cluster that joins a no-link candidate to one carrying a resolved
+      source keeps that source URL. An earlier no-link row NEVER discards a
+      resolved source.
+
+6b. CLAIM-LEVEL DEDUP - yours, and only after Step 5
+    - The same Dated Claim from different accounts -> one row. Same tie-break
+      as 6a: the EARLIEST post wins, its Post URL survives, all handles go in
+      Account, and a resolved source URL in the cluster survives.
+    - This cannot run any earlier: Dated Claim does not exist until you write
+      it in Step 5. It is the arm that catches the same story pasted link-free
+      by several accounts, which URL matching can never see.
+
+6c. CAP - last
+    - A bucket-B row carrying a live Owned-Name Hit is NEVER dropped. The cap
+      applies only to bucket-B rows with Owned-Name Hits = None; keep the most
+      recent of those up to NIGHTLY_CAP_NOLINK and drop the rest.
+    - List every dropped post (@handle, Post URL) in the run row, and report
+      both counts: rows kept on an owned-name hit, and rows kept under the cap.
 
 STEP 7 - WRITE, THEN BRIDGE
 a. Write all Signal Inbox rows in one batched call.

@@ -1,9 +1,15 @@
 #!/usr/bin/env python3
-"""X Sweep - the mechanical half of prompts/x-sweep.md (Steps 1 through 6).
+"""X Sweep - the mechanical half of prompts/x-sweep.md (Steps 1 through 6a).
 
 This script does the parts of the sweep that have one right answer: pulling the
 List, merging same-author reply chains, bucketing, fetching and parsing the
-underlying source, cleaning URLs, deduping on URL, and applying the no-link cap.
+underlying source, cleaning URLs, and URL-level dedup.
+
+Then it STOPS. Step 6b (claim-level dedup) needs Dated Claim, which this script
+does not write, and Step 6c (the cap) must run after 6b - capping first counts
+duplicates against the limit and drops rows that were about to merge. So
+candidates.json carries EVERY surviving candidate, uncapped, and the model
+runs 6b and 6c in that order.
 
 It decides nothing a model should decide. It does NOT write Headline or Dated
 Claim. It never sets Layer - there is no Layer key anywhere in its output.
@@ -34,7 +40,10 @@ from html.parser import HTMLParser
 # --------------------------------------------------------------------------
 
 X_LIST_ID = os.environ.get("X_LIST_ID", "1764453609561825483")
-NIGHTLY_CAP_NOLINK = int(os.environ.get("NIGHTLY_CAP_NOLINK", "25"))
+
+# NIGHTLY_CAP_NOLINK is deliberately absent. Step 6c (the cap) belongs to the
+# model and must run AFTER Step 6b (claim-level dedup), which needs Dated Claim
+# - a field this script does not write. See prompts/x-sweep.md, Step 6.
 
 OWNED_NAMES = OrderedDict([
     ("MU", ["Micron", "$MU", "마이크론", "微技"]),
@@ -75,11 +84,10 @@ LAYER_KEYWORDS = [
     "wafer fab equipment", "WFE",
 ]
 
-# Step 5. Verbatim from the prompt. Two of these look like typos - see
-# scripts/README.md, "Unruled carry-overs". They are implemented as written
-# because correcting a match string is a rule change, and rule changes are
-# Mitchell's call, not this script's.
-ANTHROPIC_STRINGS = ["Anthropic", "Claude", "앱트로픽", "安人比"]
+# Step 5. Verbatim from prompt v1.4. Ruled 2026-09-07: these three strings and
+# no others. The earlier list carried 앱트로픽 (wrong character - the word is
+# 앤트로픽) and 安人比 (unsubstantiated); both were removed.
+ANTHROPIC_STRINGS = ["Anthropic", "Claude", "앤트로픽"]
 
 # Step 4.
 TRACKING_PARAMS = {
@@ -128,7 +136,7 @@ def _build_term_regex(term):
         digit, so '12nm' does not match '2nm'.
 
     Trailing: a term ENDING IN A LETTER also matches a suffix that starts with
-    a digit (prompt v1.3): HBM -> HBM3E, HBM4; LPDDR -> LPDDR6; DDR -> DDR5.
+    a digit (ruled 2026-09-07): HBM -> HBM3E, HBM4; LPDDR -> LPDDR6; DDR -> DDR5.
     A suffix starting with a letter does NOT match: Meta does not match
     'metal', PIC does not match 'Picture', ASE does not match 'ASEAN'.
     A term ending in a digit gets no suffix extension.
@@ -950,15 +958,16 @@ def _record(cand, handle, bucket, url, page, owned, match_text, args):
     }
 
 
-def dedup(records, existing, merged_groups):
-    """Step 6, dedup arms this script can do mechanically.
+def dedup(records, existing):
+    """Step 6a - URL-level dedup, the whole of what this script does at Step 6.
 
     Against existing Signal Inbox rows: Post URL, then cleaned Underlying
     Source URL. Within this run: same cleaned Underlying Source URL.
 
-    The 'same Dated Claim from different accounts' arm is NOT done here. The
-    script does not write Dated Claim, so it cannot compare it. Feed the
-    model's clusters back with --merged-groups to fold them in.
+    Step 6b ('the same Dated Claim from different accounts') is NOT done here
+    and is not done later by this script either. Dated Claim does not exist
+    until the model writes it in Step 5. Step 6c (the cap) is the model's too,
+    and runs after 6b.
 
     Earliest post wins; its Post URL survives; all handles go in Account.
     """
@@ -978,18 +987,12 @@ def dedup(records, existing, merged_groups):
             continue
         live.append(rec)
 
-    # Group key: cleaned source URL, or a model-supplied group id.
-    group_of = {}
-    for gid, post_urls in enumerate(merged_groups or []):
-        for pu in post_urls:
-            group_of[pu] = "model:%d" % gid
-
+    # A cluster is a shared cleaned source URL. Nothing else groups here.
     buckets = OrderedDict()
     for rec in live:
-        key = group_of.get(rec["post_url"])
-        if key is None and rec["underlying_source_url"]:
+        if rec["underlying_source_url"]:
             key = "url:" + rec["underlying_source_url"]
-        if key is None:
+        else:
             key = "solo:" + rec["post_url"]
         buckets.setdefault(key, []).append(rec)
 
@@ -1003,18 +1006,10 @@ def dedup(records, existing, merged_groups):
                     if handle not in winner["account"]:
                         winner["account"].append(handle)
                 winner["_post_ids"] = winner["_post_ids"] + other["_post_ids"]
-                # A cross-bucket merge keeps the resolved source (dry run 2,
-                # decision (f)): a bucket-A row must not lose its URL to a
-                # bucket-B row that happens to be earlier.
-                if not winner["underlying_source_url"] and other["underlying_source_url"]:
-                    winner["underlying_source_url"] = other["underlying_source_url"]
-                    winner["bucket"] = "A"
-                    winner["publisher"] = other["publisher"]
-                    winner["source_date"] = other["source_date"]
-                    winner["verification"] = other["verification"]
-                    winner["fetched_page_path"] = other["fetched_page_path"]
-                    winner["_page_title"] = other["_page_title"]
-                    winner["_fetch_status"] = other["_fetch_status"]
+                # Every member of a "url:" cluster already carries that same
+                # source URL, so there is no resolved source to rescue here.
+                # The cross-bucket case (dry run 2, decision (f)) only arises
+                # in Step 6b, and the prompt states the rule there.
                 if other["anthropic_flag"]:
                     winner["anthropic_flag"] = True
                 for hit in other["owned_name_hits"]:
@@ -1035,44 +1030,6 @@ def dedup(records, existing, merged_groups):
     return kept, clusters, already_filed
 
 
-def apply_cap(records, cap):
-    """Step 6 cap, prompt v1.3.
-
-    A bucket-B row carrying a live Owned-Name Hit is NEVER dropped. The cap
-    applies only to bucket-B rows with Owned-Name Hits = None: keep the most
-    recent of those up to NIGHTLY_CAP_NOLINK and drop the rest.
-    """
-    kept, dropped = [], []
-    no_hit = []
-    kept_on_owned_name = 0
-
-    for rec in records:
-        if rec["bucket"] != "B":
-            kept.append(rec)
-        elif rec["owned_name_hits"] != ["None"]:
-            kept.append(rec)
-            kept_on_owned_name += 1
-        else:
-            no_hit.append(rec)
-
-    no_hit.sort(key=lambda r: (r["captured"] or "", r["post_url"]), reverse=True)
-    kept.extend(no_hit[:cap])
-    for rec in no_hit[cap:]:
-        dropped.append({"post_url": rec["post_url"],
-                        "account": rec["account"],
-                        "captured": rec["captured"],
-                        "bucket": rec["bucket"],
-                        "owned_name_hits": rec["owned_name_hits"]})
-
-    kept.sort(key=lambda r: (r["captured"] or "", r["post_url"]))
-    return kept, dropped, {
-        "bucket_b_kept_on_owned_name_hit": kept_on_owned_name,
-        "bucket_b_kept_under_cap": len(no_hit[:cap]),
-        "bucket_b_dropped_by_cap": len(dropped),
-        "cap": cap,
-    }
-
-
 # --------------------------------------------------------------------------
 # Main
 # --------------------------------------------------------------------------
@@ -1089,11 +1046,8 @@ def main(argv=None):
                     help="never touch the network; serve fetches from --pages-dir")
     ap.add_argument("--existing", help="JSON file of existing Signal Inbox rows "
                                        "for the cross-run dedup arm")
-    ap.add_argument("--merged-groups", help="JSON file: list of lists of Post URLs "
-                                            "the model deduped on Dated Claim")
     ap.add_argument("--high-water-mark", default=os.environ.get("X_HIGH_WATER_MARK"))
     ap.add_argument("--max-pages", type=int, default=3)
-    ap.add_argument("--cap", type=int, default=NIGHTLY_CAP_NOLINK)
     ap.add_argument("--list-id", default=X_LIST_ID)
     ap.add_argument("--fetch-timeout", type=float, default=30.0)
     ap.add_argument("--parse-timeout", type=int, default=20,
@@ -1128,24 +1082,17 @@ def main(argv=None):
 
     pre_dedup_buckets = _count_buckets(records)
 
-    # Step 6
+    # Step 6a. 6b and 6c are the model's, in that order.
     existing = []
     if args.existing:
         with io.open(args.existing, encoding="utf-8") as fh:
             data = json.load(fh)
         existing = data["rows"] if isinstance(data, dict) else data
-    merged_groups = None
-    if args.merged_groups:
-        with io.open(args.merged_groups, encoding="utf-8") as fh:
-            merged_groups = json.load(fh)
-
-    records, clusters, already_filed = dedup(records, existing, merged_groups)
-    post_dedup_buckets = _count_buckets(records)
-    records, dropped_by_cap, cap_counts = apply_cap(records, args.cap)
+    records, clusters, already_filed = dedup(records, existing)
 
     created = [c["created_at"] for c in candidates if c.get("created_at")]
     meta = {
-        "prompt_version": "x-sweep v1.3",
+        "prompt_version": "x-sweep v1.4",
         "list_id": args.list_id,
         "high_water_mark_in": args.high_water_mark,
         "newest_post_id": max(posts, key=lambda i: int(i)) if posts else None,
@@ -1154,29 +1101,31 @@ def main(argv=None):
         "pull": pull_notes,
         "merges": {"count": len(merges), "detail": merges},
         "buckets_pre_dedup": pre_dedup_buckets,
-        "buckets_post_dedup": post_dedup_buckets,
-        "buckets_final": _count_buckets(records),
+        "buckets_post_dedup": _count_buckets(records),
         "discarded_bucket_c": {"count": len(discarded), "detail": discarded},
         "reclassified_a_to_b": reclassified,
         "dedup": {
             "clusters": clusters,
             "cluster_count": len(clusters),
             "already_filed": already_filed,
-            "dated_claim_arm": "NOT PERFORMED - the script does not write Dated "
-                               "Claim. Re-run with --merged-groups to fold in "
-                               "the model's Dated-Claim clusters.",
+            "arm_performed": "6a only - cleaned Underlying Source URL, and "
+                             "Post URL against existing Signal Inbox rows.",
         },
-        "cap": cap_counts,
-        "dropped_by_cap": dropped_by_cap,
+        "step_6b_claim_dedup": "NOT PERFORMED - needs Dated Claim, which this "
+                               "script does not write. The model runs it.",
+        "step_6c_cap": "NOT APPLIED - every surviving candidate is in this "
+                       "file. The cap runs AFTER 6b; capping first drops rows "
+                       "that were about to merge.",
         "fetch_failures": fetch_failures,
         "parse_failures": parse_failures,
         "oldest_created_at": min(created) if created else None,
         "newest_created_at": max(created) if created else None,
-        "rows_out": len(records),
+        "candidates_out": len(records),
         "left_to_the_model": ["Headline", "Dated Claim", "Layer (never set)",
                               "Verification where it is null",
                               "Translated From from a stated translation",
-                              "Dated-Claim dedup"],
+                              "Step 6b claim-level dedup, then Step 6c cap, "
+                              "in that order"],
     }
 
     out = {"meta": meta, "records": records}
@@ -1184,14 +1133,12 @@ def main(argv=None):
         fh.write(json.dumps(out, ensure_ascii=False, indent=1) + "\n")
 
     sys.stderr.write(
-        "pages=%d posts=%d merges=%d A=%d B=%d C=%d clusters=%d "
-        "kept_on_owned_name=%d kept_under_cap=%d dropped=%d rows=%d\n" % (
+        "pages=%d posts=%d merges=%d A=%d B=%d C=%d url_clusters=%d "
+        "already_filed=%d candidates=%d (uncapped; run Step 6b then 6c)\n" % (
             len(pages), len(posts), len(merges),
-            meta["buckets_final"].get("A", 0), meta["buckets_final"].get("B", 0),
-            len(discarded), len(clusters),
-            cap_counts["bucket_b_kept_on_owned_name_hit"],
-            cap_counts["bucket_b_kept_under_cap"],
-            cap_counts["bucket_b_dropped_by_cap"], len(records)))
+            meta["buckets_post_dedup"].get("A", 0),
+            meta["buckets_post_dedup"].get("B", 0),
+            len(discarded), len(clusters), len(already_filed), len(records)))
     return 0
 
 
