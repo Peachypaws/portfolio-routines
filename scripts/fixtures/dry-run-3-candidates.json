@@ -1,0 +1,966 @@
+{
+ "meta": {
+  "prompt_version": "x-sweep v1.4",
+  "list_id": "1764453609561825483",
+  "high_water_mark_in": null,
+  "newest_post_id": "2097066657378107786",
+  "pages_pulled": 1,
+  "posts_pulled": 87,
+  "pull": {
+   "rate_limit": [
+    {
+     "page": 1,
+     "limit": "900",
+     "remaining": "899",
+     "reset": "1788816714",
+     "access_level": "read"
+    }
+   ],
+   "errors": [],
+   "stopped_on": "page-limit"
+  },
+  "merges": {
+   "count": 15,
+   "detail": [
+    {
+     "kept": "2096935231895064745",
+     "merged": [
+      "2096935294931288564"
+     ]
+    },
+    {
+     "kept": "2096908177271033916",
+     "merged": [
+      "2096908181394112651"
+     ]
+    },
+    {
+     "kept": "2096837362475253761",
+     "merged": [
+      "2096837364517921139"
+     ]
+    },
+    {
+     "kept": "2096818311514497478",
+     "merged": [
+      "2096818338760712208"
+     ]
+    },
+    {
+     "kept": "2096806570726432995",
+     "merged": [
+      "2096806669552619744"
+     ]
+    },
+    {
+     "kept": "2096795361570615763",
+     "merged": [
+      "2096795413542224345"
+     ]
+    },
+    {
+     "kept": "2096793492915925355",
+     "merged": [
+      "2096793552349257976"
+     ]
+    },
+    {
+     "kept": "2096792308360601809",
+     "merged": [
+      "2096792352602066957"
+     ]
+    },
+    {
+     "kept": "2096750434996347308",
+     "merged": [
+      "2096750525773734272"
+     ]
+    },
+    {
+     "kept": "2096748594569384164",
+     "merged": [
+      "2096748626114687411"
+     ]
+    },
+    {
+     "kept": "2096745890539315449",
+     "merged": [
+      "2096745920696394163"
+     ]
+    },
+    {
+     "kept": "2096744701949030699",
+     "merged": [
+      "2096744731657331136"
+     ]
+    },
+    {
+     "kept": "2096741552593006766",
+     "merged": [
+      "2096741612659576987"
+     ]
+    },
+    {
+     "kept": "2096731794704093565",
+     "merged": [
+      "2096732039802482704"
+     ]
+    },
+    {
+     "kept": "2096729233943130328",
+     "merged": [
+      "2096729235939578161"
+     ]
+    }
+   ]
+  },
+  "buckets_pre_dedup": {
+   "A": 17,
+   "B": 41
+  },
+  "buckets_post_dedup": {
+   "B": 20,
+   "A": 1
+  },
+  "discarded_bucket_c": {
+   "count": 14,
+   "detail": [
+    {
+     "post_url": "https://x.com/pequityresearch/status/2096620186304475410",
+     "account": "@pequityresearch",
+     "bucket": "C",
+     "reason": "no digit"
+    },
+    {
+     "post_url": "https://x.com/pequityresearch/status/2096671065959289280",
+     "account": "@pequityresearch",
+     "bucket": "C",
+     "reason": "no owned-name or layer-keyword match"
+    },
+    {
+     "post_url": "https://x.com/pequityresearch/status/2096751073784455645",
+     "account": "@pequityresearch",
+     "bucket": "C",
+     "reason": "no owned-name or layer-keyword match"
+    },
+    {
+     "post_url": "https://x.com/DrNHJ/status/2096816962588512489",
+     "account": "@DrNHJ",
+     "bucket": "C",
+     "reason": "no owned-name or layer-keyword match"
+    },
+    {
+     "post_url": "https://x.com/pequityresearch/status/2096821421645160927",
+     "account": "@pequityresearch",
+     "bucket": "C",
+     "reason": "no owned-name or layer-keyword match"
+    },
+    {
+     "post_url": "https://x.com/pequityresearch/status/2096838071983522228",
+     "account": "@pequityresearch",
+     "bucket": "C",
+     "reason": "no owned-name or layer-keyword match"
+    },
+    {
+     "post_url": "https://x.com/jukan05/status/2096844666780221607",
+     "account": "@jukan05",
+     "bucket": "C",
+     "reason": "no owned-name or layer-keyword match"
+    },
+    {
+     "post_url": "https://x.com/QQ_Timmy/status/2096882675894399033",
+     "account": "@QQ_Timmy",
+     "bucket": "C",
+     "reason": "no owned-name or layer-keyword match"
+    },
+    {
+     "post_url": "https://x.com/QQ_Timmy/status/2096884223382884378",
+     "account": "@QQ_Timmy",
+     "bucket": "C",
+     "reason": "no owned-name or layer-keyword match"
+    },
+    {
+     "post_url": "https://x.com/wallstengine/status/2097016933409497466",
+     "account": "@wallstengine",
+     "bucket": "C",
+     "reason": "no owned-name or layer-keyword match"
+    },
+    {
+     "post_url": "https://x.com/pequityresearch/status/2097023257757048936",
+     "account": "@pequityresearch",
+     "bucket": "C",
+     "reason": "no owned-name or layer-keyword match"
+    },
+    {
+     "post_url": "https://x.com/pequityresearch/status/2097027117263266256",
+     "account": "@pequityresearch",
+     "bucket": "C",
+     "reason": "no digit"
+    },
+    {
+     "post_url": "https://x.com/wallstengine/status/2097056982482157920",
+     "account": "@wallstengine",
+     "bucket": "C",
+     "reason": "no owned-name or layer-keyword match"
+    },
+    {
+     "post_url": "https://x.com/wallstengine/status/2097058473326547397",
+     "account": "@wallstengine",
+     "bucket": "C",
+     "reason": "no owned-name or layer-keyword match"
+    }
+   ]
+  },
+  "reclassified_a_to_b": [],
+  "dedup": {
+   "clusters": [],
+   "cluster_count": 0,
+   "already_filed": [
+    {
+     "post_url": "https://x.com/pequityresearch/status/2096668633099300972",
+     "account": "@pequityresearch",
+     "underlying_source_url": "https://ocr-helper.grok.me"
+    },
+    {
+     "post_url": "https://x.com/pequityresearch/status/2096687126603854076",
+     "account": "@pequityresearch",
+     "underlying_source_url": null
+    },
+    {
+     "post_url": "https://x.com/pequityresearch/status/2096698746042032226",
+     "account": "@pequityresearch",
+     "underlying_source_url": null
+    },
+    {
+     "post_url": "https://x.com/wallstengine/status/2096701546243523048",
+     "account": "@wallstengine",
+     "underlying_source_url": null
+    },
+    {
+     "post_url": "https://x.com/jukan05/status/2096729233943130328",
+     "account": "@jukan05",
+     "underlying_source_url": "https://biz.chosun.com/it-science/ict/2026/09/07/V7UWTGBE45GZ5LCMWXD3C5RQAQ/"
+    },
+    {
+     "post_url": "https://x.com/pequityresearch/status/2096730663655452989",
+     "account": "@pequityresearch",
+     "underlying_source_url": null
+    },
+    {
+     "post_url": "https://x.com/DrNHJ/status/2096741552593006766",
+     "account": "@DrNHJ",
+     "underlying_source_url": "https://home.imeritz.com/include/resource/research/WorkFlow/20260907073604796K_02.pdf"
+    },
+    {
+     "post_url": "https://x.com/DrNHJ/status/2096744701949030699",
+     "account": "@DrNHJ",
+     "underlying_source_url": "https://www.hankyung.com/article/2026090668811"
+    },
+    {
+     "post_url": "https://x.com/DrNHJ/status/2096745890539315449",
+     "account": "@DrNHJ",
+     "underlying_source_url": "https://n.news.naver.com/mnews/article/015/0005329331"
+    },
+    {
+     "post_url": "https://x.com/QQ_Timmy/status/2096745898495852894",
+     "account": "@QQ_Timmy",
+     "underlying_source_url": null
+    },
+    {
+     "post_url": "https://x.com/DrNHJ/status/2096748594569384164",
+     "account": "@DrNHJ",
+     "underlying_source_url": "https://www.marketscale.com/industries/energy/grid-oems-are-racing-to-build-in-the-us-but-transformers-still-take-23-years"
+    },
+    {
+     "post_url": "https://x.com/dnystedt/status/2096750434996347308",
+     "account": "@dnystedt",
+     "underlying_source_url": null
+    },
+    {
+     "post_url": "https://x.com/QQ_Timmy/status/2096754606185525592",
+     "account": "@QQ_Timmy",
+     "underlying_source_url": null
+    },
+    {
+     "post_url": "https://x.com/pequityresearch/status/2096757339411918970",
+     "account": "@pequityresearch",
+     "underlying_source_url": null
+    },
+    {
+     "post_url": "https://x.com/dnystedt/status/2096757441019216254",
+     "account": "@dnystedt",
+     "underlying_source_url": null
+    },
+    {
+     "post_url": "https://x.com/dnystedt/status/2096764475508752649",
+     "account": "@dnystedt",
+     "underlying_source_url": null
+    },
+    {
+     "post_url": "https://x.com/dnystedt/status/2096768701265834355",
+     "account": "@dnystedt",
+     "underlying_source_url": null
+    },
+    {
+     "post_url": "https://x.com/pequityresearch/status/2096771964320809075",
+     "account": "@pequityresearch",
+     "underlying_source_url": null
+    },
+    {
+     "post_url": "https://x.com/DrNHJ/status/2096792308360601809",
+     "account": "@DrNHJ",
+     "underlying_source_url": "https://money.udn.com/money/story/5612/9738201"
+    },
+    {
+     "post_url": "https://x.com/DrNHJ/status/2096793492915925355",
+     "account": "@DrNHJ",
+     "underlying_source_url": "https://www.mt.co.kr/tech/2026/09/07/2026090612584118295"
+    },
+    {
+     "post_url": "https://x.com/DrNHJ/status/2096795361570615763",
+     "account": "@DrNHJ",
+     "underlying_source_url": "https://t.me/Jstockclass/15086"
+    },
+    {
+     "post_url": "https://x.com/pequityresearch/status/2096803896416989617",
+     "account": "@pequityresearch",
+     "underlying_source_url": null
+    },
+    {
+     "post_url": "https://x.com/DrNHJ/status/2096806570726432995",
+     "account": "@DrNHJ",
+     "underlying_source_url": "https://n.news.naver.com/mnews/article/119/0003129839?sid=001"
+    },
+    {
+     "post_url": "https://x.com/DrNHJ/status/2096818311514497478",
+     "account": "@DrNHJ",
+     "underlying_source_url": "https://biz.chosun.com/it-science/ict/2026/09/07/AJURJOGNYRDIBDFTESKSRPVLMQ/"
+    },
+    {
+     "post_url": "https://x.com/pequityresearch/status/2096828506139136497",
+     "account": "@pequityresearch",
+     "underlying_source_url": null
+    },
+    {
+     "post_url": "https://x.com/QQ_Timmy/status/2096833986853322756",
+     "account": "@QQ_Timmy",
+     "underlying_source_url": null
+    },
+    {
+     "post_url": "https://x.com/jukan05/status/2096837362475253761",
+     "account": "@jukan05",
+     "underlying_source_url": "https://zdnet.co.kr/view/?no=20260907110055"
+    },
+    {
+     "post_url": "https://x.com/QQ_Timmy/status/2096840919593152667",
+     "account": "@QQ_Timmy",
+     "underlying_source_url": null
+    },
+    {
+     "post_url": "https://x.com/QQ_Timmy/status/2096855991262343190",
+     "account": "@QQ_Timmy",
+     "underlying_source_url": "https://counterpointresearch.com/en/insights/robotaxi-global-leaders-autonomous-mobility-2026"
+    },
+    {
+     "post_url": "https://x.com/jukan05/status/2096908177271033916",
+     "account": "@jukan05",
+     "underlying_source_url": "https://www.thelec.kr/news/articleView.html?idxno=61915"
+    },
+    {
+     "post_url": "https://x.com/DrNHJ/status/2096935231895064745",
+     "account": "@DrNHJ",
+     "underlying_source_url": "https://money.udn.com/money/story/5710/9739533"
+    },
+    {
+     "post_url": "https://x.com/pequityresearch/status/2096950109745594376",
+     "account": "@pequityresearch",
+     "underlying_source_url": null
+    },
+    {
+     "post_url": "https://x.com/pequityresearch/status/2096965460659212646",
+     "account": "@pequityresearch",
+     "underlying_source_url": null
+    },
+    {
+     "post_url": "https://x.com/jukan05/status/2096967899537907945",
+     "account": "@jukan05",
+     "underlying_source_url": "https://www.greened.kr/news/articleView.html?idxno=349245"
+    },
+    {
+     "post_url": "https://x.com/pequityresearch/status/2096996103304483131",
+     "account": "@pequityresearch",
+     "underlying_source_url": null
+    },
+    {
+     "post_url": "https://x.com/pequityresearch/status/2097010004226195633",
+     "account": "@pequityresearch",
+     "underlying_source_url": null
+    },
+    {
+     "post_url": "https://x.com/pequityresearch/status/2097042216405631260",
+     "account": "@pequityresearch",
+     "underlying_source_url": null
+    }
+   ],
+   "arm_performed": "6a only - cleaned Underlying Source URL, and Post URL against existing Signal Inbox rows."
+  },
+  "step_6b_claim_dedup": "NOT PERFORMED - needs Dated Claim, which this script does not write. The model runs it.",
+  "step_6c_cap": "NOT APPLIED - every surviving candidate is in this file. The cap runs AFTER 6b; capping first drops rows that were about to merge.",
+  "fetch_failures": [
+   {
+    "url": "https://300308.SZ",
+    "status": null,
+    "error": "OSError: Tunnel connection failed: 502 Bad Gateway",
+    "post_id": "2096826615594672511"
+   }
+  ],
+  "parse_failures": [
+   {
+    "url": "https://home.imeritz.com/include/resource/research/WorkFlow/20260907073604796K_02.pdf",
+    "reason": "pdf-short-circuit",
+    "post_id": "2096741552593006766"
+   }
+  ],
+  "oldest_created_at": "2026-09-06T15:23:00.000Z",
+  "newest_created_at": "2026-09-07T20:57:07.000Z",
+  "candidates_out": 21,
+  "left_to_the_model": [
+   "Headline",
+   "Dated Claim",
+   "Layer (never set)",
+   "Verification where it is null",
+   "Translated From from a stated translation",
+   "Step 6b claim-level dedup, then Step 6c cap, in that order"
+  ]
+ },
+ "records": [
+  {
+   "post_url": "https://x.com/pequityresearch/status/2096715060852793378",
+   "account": [
+    "@pequityresearch"
+   ],
+   "captured": "2026-09-06T21:40:00.000Z",
+   "bucket": "B",
+   "underlying_source_url": null,
+   "publisher": "@pequityresearch",
+   "source_date": null,
+   "verification": "Unverified",
+   "owned_name_hits": [
+    "None"
+   ],
+   "anthropic_flag": false,
+   "translated_from": null,
+   "raw_post_text": "MS Hwang from Counterpoint Research believes YMTC could reach 18% global NAND market share in 2028. \n\n> 2028 could be an inflection point in pricing dynamic \n\n> Demand is expected to remain stable through 2028 due to AI-driven growth\n\n> Chinese firms are increasing their tool localization rate\n\n$SNDK $EWY $DRAM $DISK",
+   "fetched_page_path": null,
+   "_post_ids": [
+    "2096715060852793378"
+   ],
+   "_quoted_text": "",
+   "_page_title": null,
+   "_fetch_status": null
+  },
+  {
+   "post_url": "https://x.com/DrNHJ/status/2096720784417030320",
+   "account": [
+    "@DrNHJ"
+   ],
+   "captured": "2026-09-06T22:02:44.000Z",
+   "bucket": "B",
+   "underlying_source_url": null,
+   "publisher": "@DrNHJ",
+   "source_date": null,
+   "verification": "Unverified",
+   "owned_name_hits": [
+    "NVDA"
+   ],
+   "anthropic_flag": false,
+   "translated_from": "Korean",
+   "raw_post_text": "엔비디아 CEO  젠슨 황  $NVDA\n\n약 10만 개 이상의 NVIDIA Grace Blackwell NVLink72로 훈련된 GPT-6 Astra. ChatGPT에서 o1, 그리고 Astra까지 4년 만에 도달했습니다.\n\nAGI가 도래했습니다. OpenAI 팀 축하합니다.\n\n다음으로는 40만 개의 GPU가 가동될 예정입니다. https://t.co/wWUOFdIzBV https://t.co/J8jzH0jY8V",
+   "fetched_page_path": null,
+   "_post_ids": [
+    "2096720784417030320"
+   ],
+   "_quoted_text": "@ChaseLochmiller @OpenAI GPT-6 Astra, trained on ~100K+ NVIDIA Grace Blackwell NVLink72. From ChatGPT to o1 to Astra in 4 years.\n\nAGI has arrived. Congratulations @OpenAI team.\n\n400K GPUs coming online next.",
+   "_page_title": null,
+   "_fetch_status": null
+  },
+  {
+   "post_url": "https://x.com/jukan05/status/2096724783723602260",
+   "account": [
+    "@jukan05"
+   ],
+   "captured": "2026-09-06T22:18:38.000Z",
+   "bucket": "B",
+   "underlying_source_url": null,
+   "publisher": "@jukan05",
+   "source_date": null,
+   "verification": "Unverified",
+   "owned_name_hits": [
+    "NVDA"
+   ],
+   "anthropic_flag": false,
+   "translated_from": null,
+   "raw_post_text": "RT @JensenHuang: @ChaseLochmiller @OpenAI GPT-6 Astra, trained on ~100K+ NVIDIA Grace Blackwell NVLink72. From ChatGPT to o1 to Astra in 4…",
+   "fetched_page_path": null,
+   "_post_ids": [
+    "2096724783723602260"
+   ],
+   "_quoted_text": "",
+   "_page_title": null,
+   "_fetch_status": null
+  },
+  {
+   "post_url": "https://x.com/jukan05/status/2096731794704093565",
+   "account": [
+    "@jukan05"
+   ],
+   "captured": "2026-09-06T22:46:29.000Z",
+   "bucket": "B",
+   "underlying_source_url": null,
+   "publisher": "@jukan05",
+   "source_date": null,
+   "verification": "Unverified",
+   "owned_name_hits": [
+    "None"
+   ],
+   "anthropic_flag": false,
+   "translated_from": null,
+   "raw_post_text": "TrendForce: Easing Notebook CPU Supply in 2H26 to Narrow the Full-Year Decline in Global Notebook Shipments https://t.co/TtxjQ3O5Ux\n\nI’m not quite sure what they mean by an improvement in notebook CPU supply at this point. Could they be referring to improved yields on Intel 18A? @Alex_Intel_",
+   "fetched_page_path": null,
+   "_post_ids": [
+    "2096731794704093565",
+    "2096732039802482704"
+   ],
+   "_quoted_text": "",
+   "_page_title": null,
+   "_fetch_status": null
+  },
+  {
+   "post_url": "https://x.com/pequityresearch/status/2096739471869833462",
+   "account": [
+    "@pequityresearch"
+   ],
+   "captured": "2026-09-06T23:17:00.000Z",
+   "bucket": "B",
+   "underlying_source_url": null,
+   "publisher": "@pequityresearch",
+   "source_date": null,
+   "verification": "Unverified",
+   "owned_name_hits": [
+    "None"
+   ],
+   "anthropic_flag": false,
+   "translated_from": null,
+   "raw_post_text": "CPO equipment is starting to see a shortage, according to HIWIN Technologies. \n\nThe company warned that accelerated commercialization of SiPho has led to demand for packaging and testing equipment to explode, resulting in some key equipment and precision components to be in a shortage. \n\n> Orders for silicon photonics inspection equipment have seen a \"surge\" since the third quarter.\n\n> HIWIN recently received orders for thousands of sets from a leading international CPO equipment manufacturer, representing a nearly 30-fold increase compared to the entire previous year.\n\n> Current delivery time for precision motion and transmission components is about three months, and for positioning platforms it is about three to four months.\n\n> Demand for FAU fiber array units, miniature linear guides, linear motors and nanometer-level alignment platforms is increasing simultaneously.\n\n> Da Yin's (CPO equipment component manufacturer) overall order visibility is currently up to six months, and that of its silicon photonics positioning platform is even higher at nine months; HIWIN's silicon photonics inspection equipment visibility extends all the way to the second quarter of next year.",
+   "fetched_page_path": null,
+   "_post_ids": [
+    "2096739471869833462"
+   ],
+   "_quoted_text": "",
+   "_page_title": null,
+   "_fetch_status": null
+  },
+  {
+   "post_url": "https://x.com/jukan05/status/2096753462038138969",
+   "account": [
+    "@jukan05"
+   ],
+   "captured": "2026-09-07T00:12:35.000Z",
+   "bucket": "B",
+   "underlying_source_url": null,
+   "publisher": "@jukan05",
+   "source_date": null,
+   "verification": "Unverified",
+   "owned_name_hits": [
+    "None"
+   ],
+   "anthropic_flag": false,
+   "translated_from": null,
+   "raw_post_text": "Meritz Securities (Korean sell side): GPT-6 Astra launch and implications for the memory stock rebound\n\nOn September 3, OpenAI unveiled GPT-6 Astra. As interpretations of this model became a hot topic, semiconductor stocks rebounded on September 4 even as the broader US market fell on rising rates following a jobs surprise, with the DRAM ETF up 6.6% versus the prior day.\n\nAstra's implication is unlikely to be simply whether AGI has been achieved. What drew the most attention was the score of 99.9% on ARC-AGI-3, a benchmark used to judge AGI, a huge improvement over the previous model (Sol at 7.8%). This benchmark is not a knowledge test; it evaluates a model's ability to learn on its own in an abstract environment it has never seen before, and this is where the improvement over the previous model was large. General intelligence, as measured by AAII or Humanity's Last Exam, did not improve much.\n\nThe differentiated strength improved in Astra is \"the ability to acquire skills that humans learn in an unfamiliar environment as efficiently as a human does.\" Where AI until now found the answer by pressing this and that 100 times, Astra has started to behave more like a human: observing the phenomenon, inferring the rules, and executing right away.\n\nThe key point is \"an expanded scope for replacing human intelligence and human work.\" If existing AI was an AI that told you what to do, Astra is closer to an AI that, given only a goal, uses the computer directly and produces the result all the way to the end. In other words, an easy to use OpenAI model has begun to handle on its own part of the agent orchestration layer that had been the domain of less accessible tools such as OpenClaw. For users, the barrier to entry for AI agents has been lowered, meaning more work can be handed over.\n\nExpansion of AI workloads\n\nAstra naturally also comes with efficiency gains that lower the token cost per task versus the previous model. This is a trend across the AI industry as a whole, and if AI workloads were fixed, demand for AI data centers would have to plunge.\n\nThe reason Jevons paradox continues to operate even after token price declines became a trend following the rise of Chinese models is that AI technological progress also expands the workload. What Astra's technological progress means is that where humans used to hand five minute, ten minute, and twenty minute tasks to AI, as AI performance improves and token prices get cheaper there is more to hand over, such as one hour and 24 hour tasks.\n\nJust as news flow about rising GPU rental prices has spread since Astra's arrival, it must be understood that falling AI token prices do not necessarily shrink or slow the AI hardware TAM. Rather, one should recognize that the emergence of a model like Astra can create another inflection point for the AI industry and structurally grow AI demand.\n\nOur understanding is that since early July, as the pace of GPU rental price increases slowed and token prices fell, a long IGV (software) / short SOX (semiconductors) pair trade has persisted in the US. This is because falling token prices were interpreted as positive for software, where tokens are a cost, but negative for infrastructure.\n\nIf progress in models like Astra structurally spreads AI workloads and GPU rental prices begin to respond again, the perception that falling token prices are bad news for AI infrastructure companies could weaken (on 9/4 the DRAM ETF rebounded while IGV fell).\n\nAs we have argued consistently, the issues accumulating in the AI industry since June (the proliferation of open models, this GPT-6 Astra release, and so on) are, in our interpretation, positive catalysts that generate new demand for AI infrastructure and hardware that did not exist before. We think that in a phase where rates are rising overall and liquidity is becoming scarce, these accumulated positives are not being reflected.\n\nThe stock market in September is still uncomfortable with high rates, and within the Korean market there remain hurdles to get through, including digesting a round of earnings estimate cuts driven by the sharp won appreciation before the 3Q26 preview season. There is still discomfort standing in the way of the accumulated positives being reflected in a sustained trend. Overall, we continue to view the market conservatively.\n\nEven so, as emphasized in our September strategy, we believe one should not substantially empty out positions in core AI infrastructure stocks centered on memory. Positive catalysts not reflected in share prices are accumulating. While our baseline is conservative through mid October, one should keep the upside risk open that the trend, led by AI and semiconductor leaders, could turn at any time, even before October.",
+   "fetched_page_path": null,
+   "_post_ids": [
+    "2096753462038138969"
+   ],
+   "_quoted_text": "",
+   "_page_title": null,
+   "_fetch_status": null
+  },
+  {
+   "post_url": "https://x.com/dnystedt/status/2096772052619510166",
+   "account": [
+    "@dnystedt"
+   ],
+   "captured": "2026-09-07T01:26:28.000Z",
+   "bucket": "B",
+   "underlying_source_url": null,
+   "publisher": "@dnystedt",
+   "source_date": null,
+   "verification": "Unverified",
+   "owned_name_hits": [
+    "None"
+   ],
+   "anthropic_flag": false,
+   "translated_from": null,
+   "raw_post_text": "Taiwan’s state-run power company plans to propose October electricity rate hikes of 15%-20% for heavy power users like semiconductor makers and data center operators, media report, citing unnamed sources. Prices for consumers, small businesses, and non-tech industries will remain unchanged. https://t.co/7WmtSP8Q9w",
+   "fetched_page_path": null,
+   "_post_ids": [
+    "2096772052619510166"
+   ],
+   "_quoted_text": "",
+   "_page_title": null,
+   "_fetch_status": null
+  },
+  {
+   "post_url": "https://x.com/jukan05/status/2096781957934076397",
+   "account": [
+    "@jukan05"
+   ],
+   "captured": "2026-09-07T02:05:49.000Z",
+   "bucket": "B",
+   "underlying_source_url": null,
+   "publisher": "@jukan05",
+   "source_date": null,
+   "verification": "Unverified",
+   "owned_name_hits": [
+    "NVDA"
+   ],
+   "anthropic_flag": false,
+   "translated_from": null,
+   "raw_post_text": "• Turning positive on DRAM sector after prior bearish notes on July 3. \n• DRAM solid: We believe the US hyperscaler inventories low and likely to be lowered further. Blended DRAM px expected ~10% QoQ in 4Q26 (vs high-teens in 3Q26).\n• NAND soft: High-teen QoQ pricing in 3Q26, then softening to low single-digit in 4Q26 on weaker mobile demand + elevated inventories.\n\n👀👀",
+   "fetched_page_path": null,
+   "_post_ids": [
+    "2096781957934076397"
+   ],
+   "_quoted_text": "Memory: Our Tech Tour Suggests Intact DRAM \n\n• Recent supply chain tour + SEMICON 2026 point to stronger DRAM outlook than feared. Turning positive on DRAM sector after prior bearish notes on July 3. \n• DRAM solid: We believe the US hyperscaler inventories low and likely to be lowered further. Blended DRAM px expected ~10% QoQ in 4Q26 (vs high-teens in 3Q26).\n• NAND soft: High-teen QoQ pricing in 3Q26, then softening to low single-digit in 4Q26 on weaker mobile demand + elevated inventories.\n• HBM firm: Constructive 2027 view on tight supply + Chinese GPU demand. HBM4 asking ranging from $2.9-4.5/Gb and we expect the final pricing to be $3.5-4.0/Gb. However, still favor 8-Hi adoption but low probability of 4-Hi GPU variants. Vera SOCAMM de-spec remains, to 64GB by 1Q27.\n• SEMICON / NVHBM: MTK + Nvidia collab on NVHBM highlighted. Shifts base-die design value toward Nvidia (NVDA) and MTK (2454 TT). cHBM/zHBM progress noted during SEMICON\n\n#Memory #DRAM #NAND #SEMICON #NVDA #MTK #MU",
+   "_page_title": null,
+   "_fetch_status": null
+  },
+  {
+   "post_url": "https://x.com/pequityresearch/status/2096789028506849617",
+   "account": [
+    "@pequityresearch"
+   ],
+   "captured": "2026-09-07T02:33:55.000Z",
+   "bucket": "B",
+   "underlying_source_url": null,
+   "publisher": "@pequityresearch",
+   "source_date": null,
+   "verification": "Unverified",
+   "owned_name_hits": [
+    "None"
+   ],
+   "anthropic_flag": false,
+   "translated_from": null,
+   "raw_post_text": "Yuanta Securities and the Taiwan Stock Exchange jointly hosted the \"2026 Semiconductor Show Summit Forum\" and shared three key industries to monitor considering strong AI demand: \n\n1. ABF substrates, CCL, advanced processes, advanced packaging and testing\n\n2. Passive components\n\n3. Petrochemicals",
+   "fetched_page_path": null,
+   "_post_ids": [
+    "2096789028506849617"
+   ],
+   "_quoted_text": "",
+   "_page_title": null,
+   "_fetch_status": null
+  },
+  {
+   "post_url": "https://x.com/DrNHJ/status/2096789935546315251",
+   "account": [
+    "@DrNHJ"
+   ],
+   "captured": "2026-09-07T02:37:31.000Z",
+   "bucket": "B",
+   "underlying_source_url": null,
+   "publisher": "@DrNHJ",
+   "source_date": null,
+   "verification": "Unverified",
+   "owned_name_hits": [
+    "MU",
+    "NVDA"
+   ],
+   "anthropic_flag": false,
+   "translated_from": "Korean",
+   "raw_post_text": "$MU, $SKHY, Samsung\n\nGF Securities, 메모리: 테크 투어 결과, DRAM 시황 건재함 확인\n\n최근 공급망 투어 및 SEMICON 2026 결과, DRAM 전망이 우려했던 것보다 더 양호한 것으로 확인됨. 지난 7월 3일 약세(bearish) 의견 제시 이후 DRAM 섹터에 대해 긍정적 시각으로 전환.\n\nDRAM 견조: 미국 하이퍼스케일러들의 재고가 낮으며, 향후 재고가 더 낮아질 가능성이 높다고 판단. 2026년 4분기 혼합 DRAM 가격(Blended DRAM px)은 전분기 대비(QoQ) 약 10% 상승 예상 (3분기 10%대 후반 상승 대비).\n\nNAND 약세: 3분기 전분기 대비 10%대 후반 상승 후, 모바일 수요 둔화 및 재고 증가 영향으로 4분기에는 한 자릿수 초반(low single-digit) 상승에 그치며 둔화될 전망.\n\nHBM 견고: 타이트한 공급과 중국 GPU 수요를 바탕으로 2027년에 대해 긍정적 전망 유지. HBM4 요구 가격(호가)은 Gb당 2.9~4.5달러 수준이며, 최종 가격은 Gb당 3.5~4.0달러가 될 것으로 예상. 다만 여전히 8단(8-Hi) 채택이 유력하며 4단(4-Hi) GPU 파생 모델 가능성은 낮음. Vera SOCAMM의 다운스펙(de-spec) 기조는 유지되어 2027년 1분기까지 64GB로 축소.\n\nSEMICON / NVHBM: NVHBM 관련 미디어텍(MTK)과 엔비디아의 협업 부각. 베이스 다이(Base-die) 설계 가치가 엔비디아(NVDA) 및 MTK(2454 TT) 쪽으로 이전. SEMICON 기간 동안 cHBM/zHBM 관련 진척 사항 확인.",
+   "fetched_page_path": null,
+   "_post_ids": [
+    "2096789935546315251"
+   ],
+   "_quoted_text": "Memory: Our Tech Tour Suggests Intact DRAM \n\n• Recent supply chain tour + SEMICON 2026 point to stronger DRAM outlook than feared. Turning positive on DRAM sector after prior bearish notes on July 3. \n• DRAM solid: We believe the US hyperscaler inventories low and likely to be lowered further. Blended DRAM px expected ~10% QoQ in 4Q26 (vs high-teens in 3Q26).\n• NAND soft: High-teen QoQ pricing in 3Q26, then softening to low single-digit in 4Q26 on weaker mobile demand + elevated inventories.\n• HBM firm: Constructive 2027 view on tight supply + Chinese GPU demand. HBM4 asking ranging from $2.9-4.5/Gb and we expect the final pricing to be $3.5-4.0/Gb. However, still favor 8-Hi adoption but low probability of 4-Hi GPU variants. Vera SOCAMM de-spec remains, to 64GB by 1Q27.\n• SEMICON / NVHBM: MTK + Nvidia collab on NVHBM highlighted. Shifts base-die design value toward Nvidia (NVDA) and MTK (2454 TT). cHBM/zHBM progress noted during SEMICON\n\n#Memory #DRAM #NAND #SEMICON #NVDA #MTK #MU",
+   "_page_title": null,
+   "_fetch_status": null
+  },
+  {
+   "post_url": "https://x.com/QQ_Timmy/status/2096802684397617618",
+   "account": [
+    "@QQ_Timmy"
+   ],
+   "captured": "2026-09-07T03:28:11.000Z",
+   "bucket": "B",
+   "underlying_source_url": null,
+   "publisher": "@QQ_Timmy",
+   "source_date": null,
+   "verification": "Unverified",
+   "owned_name_hits": [
+    "NVDA"
+   ],
+   "anthropic_flag": false,
+   "translated_from": "Chinese",
+   "raw_post_text": "記憶體：我們的科技參訪顯示 DRAM 情況完好\n\n- 近期供應鏈參訪加上 SEMICON 2026，顯示 DRAM 前景比原先擔心的更強勁。在 7 月 3 日先前看空的報告之後，我們轉為對 DRAM 產業持正面看法。\n\n- DRAM 穩健：我們認為美國超大規模雲端業者庫存偏低，且可能進一步下降。預期 2026 年第四季混合 DRAM 價格季增約 10%（相較第三季的高雙位數）。\n\n- NAND 偏弱：2026 年第三季價格季增高雙位數，之後因手機需求較弱加上庫存偏高，第四季將回軟至低個位數。\n\n- HBM 堅挺：對 2027 年看法正面，因供應緊俏加上中國 GPU 需求。HBM4 詢價範圍在每 Gb 2.9–4.5 美元，我們預期最終定價落在每 Gb 3.5–4.0 美元。不過仍看好 8-Hi 採用，4-Hi GPU 變體機率偏低。Vera SOCAMM 規格下修仍在，預計 2027 年第一季降至 64GB。\n\n- SEMICON / NVHBM：聯發科 + Nvidia 在 NVHBM 的合作被凸顯。這將 base-die 設計價值轉向 Nvidia（NVDA）與聯發科（2454 TT）。SEMICON 期間也提到 cHBM/zHBM 進展。",
+   "fetched_page_path": null,
+   "_post_ids": [
+    "2096802684397617618"
+   ],
+   "_quoted_text": "Memory: Our Tech Tour Suggests Intact DRAM \n\n• Recent supply chain tour + SEMICON 2026 point to stronger DRAM outlook than feared. Turning positive on DRAM sector after prior bearish notes on July 3. \n• DRAM solid: We believe the US hyperscaler inventories low and likely to be lowered further. Blended DRAM px expected ~10% QoQ in 4Q26 (vs high-teens in 3Q26).\n• NAND soft: High-teen QoQ pricing in 3Q26, then softening to low single-digit in 4Q26 on weaker mobile demand + elevated inventories.\n• HBM firm: Constructive 2027 view on tight supply + Chinese GPU demand. HBM4 asking ranging from $2.9-4.5/Gb and we expect the final pricing to be $3.5-4.0/Gb. However, still favor 8-Hi adoption but low probability of 4-Hi GPU variants. Vera SOCAMM de-spec remains, to 64GB by 1Q27.\n• SEMICON / NVHBM: MTK + Nvidia collab on NVHBM highlighted. Shifts base-die design value toward Nvidia (NVDA) and MTK (2454 TT). cHBM/zHBM progress noted during SEMICON\n\n#Memory #DRAM #NAND #SEMICON #NVDA #MTK #MU",
+   "_page_title": null,
+   "_fetch_status": null
+  },
+  {
+   "post_url": "https://x.com/DrNHJ/status/2096817382899716402",
+   "account": [
+    "@DrNHJ"
+   ],
+   "captured": "2026-09-07T04:26:35.000Z",
+   "bucket": "B",
+   "underlying_source_url": null,
+   "publisher": "@DrNHJ",
+   "source_date": null,
+   "verification": "Unverified",
+   "owned_name_hits": [
+    "None"
+   ],
+   "anthropic_flag": false,
+   "translated_from": "Korean",
+   "raw_post_text": "골드만삭스, 글로벌 광 트랜시버 (GLOBAL OPTICAL TRANSCEIVERS)\n2026~2028년(26-28E) 1.6T 이상 출하량 전망치 29% / 61% / 50% 상향; \n\n$LITE, $SMTC, $AAOI\n\n지속적인 제품 믹스 업그레이드 기대\n\n수요를 견인하는 AI 인프라 지출 확대, 고속 전송(800G/ 1.6T/ 3.2T) 중심의 제품 믹스 업그레이드, 그리고 서버 포트 속도 증가에 따른 광통신 채택 확대를 바탕으로 향후 광 트랜시버 시장의 성장을 긍정적으로 전망합니다. \n\n본 리포트에서는 랙 스케일(rack-level) 서버 및 ASIC 서버의 출하량 증가, GPU 칩당 광 모듈 사용량 증가, 사양 업그레이드 추세를 반영하여 글로벌 광 트랜시버 출하량 전망치를 2026~2028년 각각 21% / 31% / 31%, 800G 이상 출하량 전망치는 31% / 39% / 36%, 1.6T 이상 출하량 전망치는 29% / 61% / 50% 상향 조정했습니다.\n\n2026/27/28년에 글로벌 광 트랜시버 시장 규모는 각각 680억 달러 / 1,310억 달러 / 1,480억 달러에 이를 것으로 예상되며, 이 중 800G 이상 제품군은 연평균 복합 성장률(CAGR) +69%로 성장하여 각각 450억 달러 / 1,080억 달러 / 1,300억 달러에 달할 전망입니다.\n\n 출하량 기준으로는 800G/1.6T 출하량이 2026년 4,500만 개 / 3,300만 개에서 2027년 4,900만 개 / 7,100만 개로 증가하고, 3.2T 출하량은 2027/28년에 각각 2,300만 개 / 6,800만 개로 본격 확대될 것으로 예상합니다.\n\n 당사는 실리콘 포토닉스(Silicon photonics)가 800G / 1.6T / 3.2T 광 트랜시버에서 각각 60% / 80% / 80%의 비중을 차지할 것으로 판단합니다.",
+   "fetched_page_path": null,
+   "_post_ids": [
+    "2096817382899716402"
+   ],
+   "_quoted_text": "",
+   "_page_title": null,
+   "_fetch_status": null
+  },
+  {
+   "post_url": "https://x.com/QQ_Timmy/status/2096823353869054037",
+   "account": [
+    "@QQ_Timmy"
+   ],
+   "captured": "2026-09-07T04:50:19.000Z",
+   "bucket": "B",
+   "underlying_source_url": null,
+   "publisher": "@QQ_Timmy",
+   "source_date": null,
+   "verification": "Unverified",
+   "owned_name_hits": [
+    "None"
+   ],
+   "anthropic_flag": false,
+   "translated_from": "Chinese",
+   "raw_post_text": "鎧俠等業者強化資料中心用「液冷式」儲存裝置的開發與銷售……半導體高性能化導致「發熱量」增加\n\n支撐AI的資料中心，伺服器冷卻正從傳統「風冷」轉向效率更高的「液冷」。主因是半導體高性能化後發熱量大增，風冷已難應付，企業因此加速開發對應產品。\n\n鎧俠（Kioxia）近日公開液冷式資料中心儲存裝置：在接觸半導體的金屬板上開細孔，讓冷卻液直接流過帶走熱量。樣品已出貨美國，最快10月量產。負責人預期，未來液冷產品將成主力。\n\n半導體不耐熱，過去資料中心多以空調冷卻機房空氣。但AI資料中心大量使用高耗電、高發熱晶片，冷卻需求急升。水的熱傳導率比空氣高20倍以上，液冷可直接冷卻晶片，冷卻效果更好，耗電也較低。風冷機房約有三至四成電力用在冷卻。\n\n市場研究顯示，AI半導體中液冷產品占比，預估從2023年的6%升至2027年的59%。\n企業視此為商機：松下3月開始接冷卻液循環裝置訂單；富士電機6月推出液冷裝置；TDK則宣布最高以640億日圓收購具備金屬微細加工技術的美國新創，以便讓冷卻液通過精密流道。\n\nhttps://t.co/Ff2vtegql8",
+   "fetched_page_path": null,
+   "_post_ids": [
+    "2096823353869054037"
+   ],
+   "_quoted_text": "",
+   "_page_title": null,
+   "_fetch_status": null
+  },
+  {
+   "post_url": "https://x.com/QQ_Timmy/status/2096826615594672511",
+   "account": [
+    "@QQ_Timmy"
+   ],
+   "captured": "2026-09-07T05:03:16.000Z",
+   "bucket": "A",
+   "underlying_source_url": "https://300308.SZ",
+   "publisher": null,
+   "source_date": null,
+   "verification": "Unverified",
+   "owned_name_hits": [
+    "None"
+   ],
+   "anthropic_flag": false,
+   "translated_from": "Chinese",
+   "raw_post_text": "中際旭創（Innolight，https://t.co/RDf8hVL2KJ）\n\n高盛給予中際旭創A股與H股「買入」評級\n- A股目標價人民幣2,645元（潛在升幅約225%）\n- H股目標價港幣3,267元（潛在升幅約225%）\n\n公司定位與成長預測\n- 中際旭創是全球領先的光互連解決方案供應商\n- 預測2026-28年營收年複合成長率達78%\n- 成長動力來自SiPh光模組出貨增加，以及從scale-out擴展到scale-up／scale-across市場\n\n高於市場共識的原因\n- 2026／27年淨利預測高於市場25%／42%\n- 看好其在SiPh技術領先、1.6T以上規格放量、供應鏈穩定，以及CPO競爭可控\n\n美國潛在限制的看法\n- FCC可能限制中國製光模組進口\n- 高盛不對結果表態，但認為公司服務CSP與AI供應鏈的經驗，使其較同業更能適應變化\n\n未來催化劑\n- 1.6T／3.2T光模組加速放量\n- 新一代AI平台（Rubin、Rubin Ultra）帶動規格升級\n- NPO解決方案帶來額外營收\n\n主要風險\n- 800G以上需求放緩\n- 新光器件放量進度不如預期\n- 市佔率回歸正常速度快於預期\n- 地緣政治風險\n- 元件供應惡化",
+   "fetched_page_path": null,
+   "_post_ids": [
+    "2096826615594672511"
+   ],
+   "_quoted_text": "高盛：中际旭创买入评级 https://t.co/1jNRt3rIq9",
+   "_page_title": null,
+   "_fetch_status": null
+  },
+  {
+   "post_url": "https://x.com/QQ_Timmy/status/2096839128268853648",
+   "account": [
+    "@QQ_Timmy"
+   ],
+   "captured": "2026-09-07T05:53:00.000Z",
+   "bucket": "B",
+   "underlying_source_url": null,
+   "publisher": "@QQ_Timmy",
+   "source_date": null,
+   "verification": "Unverified",
+   "owned_name_hits": [
+    "TSM"
+   ],
+   "anthropic_flag": false,
+   "translated_from": "Chinese",
+   "raw_post_text": "AWS 擴大拉貨 AI 機櫃，台積電、世芯、緯穎、鴻海本季出貨轉強。\n\n客戶動向\n亞馬遜資本支出上修至 2,200 億美元，主攻 AI 基建。亞馬遜執行長賈西（Andy Jassy）看好算力吃緊延續至 2027–2028 年；AWS AI 與自研晶片規模約 250 億美元，仍高速成長。\n\n晶片與製程\nAnnapurna 自研 ASIC 多由台積電 3 奈米生產。世芯為重要夥伴，本季營收獲利可望創新高，第 4 季續增；3 奈米需求優於預期，明年貢獻有機會上修，動能估延續三至四年。\n\n組裝與托盤\n緯穎負責 ASIC 機櫃組裝與交換機托盤，下半年另有 GPU 專案，法人估 2026 年營收年增約四成。\n鴻海切入 CPU 托盤，ASIC 伺服器市占目標逾 40%。\n\n供應鏈全面動起來，本季營運偏熱；台廠不評論單一客戶。",
+   "fetched_page_path": null,
+   "_post_ids": [
+    "2096839128268853648"
+   ],
+   "_quoted_text": "Rumor: Amazon AWS has stepped up procurement of AI server racks, both amount and speed, after raising its 2026 capex to US$220 billion from $200B, media report, citing unnamed supply chain sources.\n-Increased 3nm custom ASIC training and inference chip orders to TSMC (via AWS chip design partner Alchip)\n-AI server partner Wiwynn boosts rack and switch tray production \n-Foxconn won CPU tray orders $AMZN https://t.co/wjURz5BH4B\n $AMZN https://t.co/wjURz5BH4B",
+   "_page_title": null,
+   "_fetch_status": null
+  },
+  {
+   "post_url": "https://x.com/QQ_Timmy/status/2096885980452327821",
+   "account": [
+    "@QQ_Timmy"
+   ],
+   "captured": "2026-09-07T08:59:10.000Z",
+   "bucket": "B",
+   "underlying_source_url": null,
+   "publisher": "@QQ_Timmy",
+   "source_date": null,
+   "verification": "Unverified",
+   "owned_name_hits": [
+    "NVDA",
+    "AVGO"
+   ],
+   "anthropic_flag": false,
+   "translated_from": "Chinese",
+   "raw_post_text": "三星晶圓代工正全力擴產 HBM4。4奈米製程已有逾半產能投入 HBM4 基底晶片（base die），近期占比達50%～60%，下半年將維持高水位。此舉旨在提前因應下半年對輝達、博通、超微等大廠的供應擴大。\n\n三星今年2月率先量產出貨 HBM4，上半年量仍有限，規劃自第三季起大幅放量。平澤P2、P3的4奈米產能約月產3萬片，其中約1.5萬片用於HBM4基底晶片。該晶片採SF4製程，位於堆疊DRAM下方，負責記憶體與系統晶片資料傳輸，世代愈新重要性愈高。\n\n三星並以較競爭對手更先進的4奈米製程強化技術。公司預估第三季HBM4營收季增逾3倍，下半年HBM4將占整體HBM營收逾60%，為全年HBM擴張目標增添動能。",
+   "fetched_page_path": null,
+   "_post_ids": [
+    "2096885980452327821"
+   ],
+   "_quoted_text": "Samsung Foundry Goes All In on HBM4 Expansion... Half of 4nm Capacity Now Devoted to Base Dies\n\nThe share of Samsung Electronics' foundry 4 nanometer (nm) process allocated to mass production of base dies for sixth generation high bandwidth memory (HBM4) has recently surpassed 50%. The move is seen as a preemptive step to expand HBM4 supply to global big tech customers such as Nvidia, Broadcom, and AMD in the second half of this year.\n\nAccording to industry sources on the 7th, Samsung Electronics' Foundry Business Division is putting more than half of its 4nm process wafers into the manufacturing of base dies for HBM4 in the second half of this year.\n\nHBM4 is the newest generation of HBM currently in commercial production. It is used in Nvidia's most advanced AI accelerators, including Vera Rubin. Samsung Electronics was the first in the industry to begin mass production shipments of HBM4 in February. As this was the initial production run, supply volume in the first half of the year is estimated to have been limited.\n\nSamsung Electronics plans to expand HBM4 supply in earnest starting in the third quarter of this year. In line with this, it has been sharply increasing wafer starts for HBM4 base die mass production since the middle of the year. The chip is built on Samsung Foundry's 4nm (SF4) process.\n\nPutting together accounts from inside and outside Samsung Electronics, as of last month, more than 50% of Samsung Electronics' total 4nm production capacity had been allocated to HBM4 base dies.\n\nOne source familiar with the matter said, \"Samsung Electronics' 4nm process is currently running at full production, and as I understand it, HBM4 base dies account for 50% to 60% of that,\" adding, \"the high share will be maintained throughout the second half.\"\n\nSamsung Electronics is mass producing 4nm to 7nm class processes on foundry lines (S5, S6) at Pyeongtaek Campus 2 (P2) and Campus 3 (P3). Of this, the production capacity allocated to 4nm is estimated at around 30,000 wafers per month. Taking this into account, wafer starts for HBM4 base dies are observed to be running at roughly 15,000 wafers per month.\n\nThe base die sits beneath the core dies, which are multiple DRAM dies stacked vertically, in an HBM package, and supports data transfer between the memory and the system semiconductor. As HBM generations advance, the importance of the base die continues to grow.\n\nAccordingly, Samsung Electronics is further advancing its base die technology through its internal System LSI and Foundry Business Divisions. In particular, for HBM4 it has applied a 4nm process that is ahead of its competitors.\n\nThis expansion of base die mass production is being assessed as a green light for Samsung Electronics to achieve its HBM business expansion targets for this year.\n\nEarlier, on its second quarter earnings conference call, Samsung Electronics stated, \"HBM4 revenue in the third quarter of this year is expected to expand by more than three times quarter over quarter,\" and explained, \"on a second half basis, HBM4 revenue will comfortably exceed 60% of our total HBM revenue.\"",
+   "_page_title": null,
+   "_fetch_status": null
+  },
+  {
+   "post_url": "https://x.com/jukan05/status/2096901251443368260",
+   "account": [
+    "@jukan05"
+   ],
+   "captured": "2026-09-07T09:59:51.000Z",
+   "bucket": "B",
+   "underlying_source_url": null,
+   "publisher": "@jukan05",
+   "source_date": null,
+   "verification": "Unverified",
+   "owned_name_hits": [
+    "None"
+   ],
+   "anthropic_flag": false,
+   "translated_from": null,
+   "raw_post_text": "CXMT responded to rumors of a partnership with Apple as follows:\n\n“We take an open approach to exploring collaboration opportunities with top-tier customers worldwide. Our products are already capable of competing with leading global suppliers in terms of performance, quality, and supply reliability.”\n\nThat sounds like a tacit confirmation. At this point, we should probably consider the Apple–CXMT partnership all but confirmed…",
+   "fetched_page_path": null,
+   "_post_ids": [
+    "2096901251443368260"
+   ],
+   "_quoted_text": "长鑫和苹果的合作是实锤了，LPDDR6 也可以上机了，而且这里提到了duv 光刻机，从隐晦的说辞来看，已经可以落地试产了，以后不用质疑中国国产 duv 光刻机了。 https://t.co/pLer544RKx",
+   "_page_title": null,
+   "_fetch_status": null
+  },
+  {
+   "post_url": "https://x.com/jukan05/status/2096934443026153775",
+   "account": [
+    "@jukan05"
+   ],
+   "captured": "2026-09-07T12:11:45.000Z",
+   "bucket": "B",
+   "underlying_source_url": null,
+   "publisher": "@jukan05",
+   "source_date": null,
+   "verification": "Unverified",
+   "owned_name_hits": [
+    "None"
+   ],
+   "anthropic_flag": false,
+   "translated_from": null,
+   "raw_post_text": "It looks like CXMT is still short on LPDDR6 supply. According to sources in China, Xiaomi’s new foldable will use LPDDR6 from both CXMT and SK hynix. https://t.co/qa8kaBj4To",
+   "fetched_page_path": null,
+   "_post_ids": [
+    "2096934443026153775"
+   ],
+   "_quoted_text": "",
+   "_page_title": null,
+   "_fetch_status": null
+  },
+  {
+   "post_url": "https://x.com/pequityresearch/status/2096983580215812188",
+   "account": [
+    "@pequityresearch"
+   ],
+   "captured": "2026-09-07T15:27:00.000Z",
+   "bucket": "B",
+   "underlying_source_url": null,
+   "publisher": "@pequityresearch",
+   "source_date": null,
+   "verification": "Unverified",
+   "owned_name_hits": [
+    "None"
+   ],
+   "anthropic_flag": false,
+   "translated_from": null,
+   "raw_post_text": "Anyone? https://t.co/KR2UndMShQ https://t.co/A3NPlvUsZM",
+   "fetched_page_path": null,
+   "_post_ids": [
+    "2096983580215812188"
+   ],
+   "_quoted_text": "If anyone is working in optical networking industry with experience in lasers, i'd love to talk to you. Short 30-40 min call. No proprietary information wanted, just industry information. \n\nPlease contact me via X or email. I am willing to offer comp for your time if need be. https://t.co/XIBDR76llP",
+   "_page_title": null,
+   "_fetch_status": null
+  },
+  {
+   "post_url": "https://x.com/wallstengine/status/2097053208636199267",
+   "account": [
+    "@wallstengine"
+   ],
+   "captured": "2026-09-07T20:03:40.000Z",
+   "bucket": "B",
+   "underlying_source_url": null,
+   "publisher": "@wallstengine",
+   "source_date": null,
+   "verification": "Unverified",
+   "owned_name_hits": [
+    "NVDA"
+   ],
+   "anthropic_flag": false,
+   "translated_from": null,
+   "raw_post_text": "NVIDIA $NVDA CEO JENSEN HUANG AMONG GUESTS ON KING CHARLES III’S AI MEETING LIST - POLITICO https://t.co/w9kVRQr8iC",
+   "fetched_page_path": null,
+   "_post_ids": [
+    "2097053208636199267"
+   ],
+   "_quoted_text": "",
+   "_page_title": null,
+   "_fetch_status": null
+  },
+  {
+   "post_url": "https://x.com/pequityresearch/status/2097066657378107786",
+   "account": [
+    "@pequityresearch"
+   ],
+   "captured": "2026-09-07T20:57:07.000Z",
+   "bucket": "B",
+   "underlying_source_url": null,
+   "publisher": "@pequityresearch",
+   "source_date": null,
+   "verification": "Unverified",
+   "owned_name_hits": [
+    "MU"
+   ],
+   "anthropic_flag": false,
+   "translated_from": null,
+   "raw_post_text": "KB Securities: share of memory in AI infrastructure investment is projected to rise from 14% in 2025 to 40% in 2026 and 57% in 2027.  \n\n$DRAM $EWY $MU $DRAM $SNDK $DISK",
+   "fetched_page_path": null,
+   "_post_ids": [
+    "2097066657378107786"
+   ],
+   "_quoted_text": "",
+   "_page_title": null,
+   "_fetch_status": null
+  }
+ ]
+}
