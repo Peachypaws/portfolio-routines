@@ -170,6 +170,5 @@ MU). Rows kept under the cap: 11. Nothing capped.
 
 ## Note on the repository
 
-`origin/main` holds only `README.md`. The prompt, the script and the earlier
-run notes live on `claude/quirky-keller-l4h9ss`, which is where v1.4 was read
-from and where this note is committed.
+Prompt v1.4 was read from `44ad47f`, which is the tip of `main`. This note is
+committed on `claude/quirky-keller-l4h9ss`, one commit ahead of it.
