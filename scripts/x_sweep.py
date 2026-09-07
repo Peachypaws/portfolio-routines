@@ -13,8 +13,15 @@ runs 6b and 6c in that order.
 
 It decides nothing a model should decide. It does NOT write Headline or Dated
 Claim. It never sets Layer - there is no Layer key anywhere in its output.
+(_layer_hits is the Step 3B gate evidence, not a Layer; see below.)
 
 Output is one candidates.json: {"meta": {...}, "records": [...]}.
+
+Working fields carry a leading underscore and are NOT Signal Inbox columns.
+Since 2026-09-07 (prompt v1.5) they include the handover fields dry run 3
+asked for: _layer_hits, _digit_gate, _post_texts, _quoted_posts and
+_source_excerpt. `verification` no longer uses null for "the model decides" -
+it carries the named state VERIFICATION_MODEL_DECIDES.
 
 Standard library only. Python 3.8+.
 """
@@ -97,6 +104,16 @@ TRACKING_PARAMS = {
 
 X_HOSTS = {"x.com", "www.x.com", "twitter.com", "www.twitter.com",
            "mobile.twitter.com", "t.co"}
+
+# Step 5. The two states `verification` can hold on the way out of this script.
+# Before prompt v1.5 the second one was a bare null, which reads like a missing
+# field; dry run 3 asked for a named state.
+VERIFICATION_UNVERIFIED = "Unverified"      # the prompt forces it, mechanically
+VERIFICATION_MODEL_DECIDES = "Model decides"  # a reading judgment; Step 5 arm
+
+# How much fetched body text travels with a bucket-A record, so the model can
+# judge "did the fetch confirm the claim" without re-reading the saved HTML.
+SOURCE_EXCERPT_CHARS = 1500
 
 USER_AGENT = ("Mozilla/5.0 (X Sweep intake clerk; +portfolio-routines) "
               "Python-urllib")
@@ -193,6 +210,45 @@ class Matcher:
 
 DIGIT_RE = re.compile(r"[0-9]")  # Step 3B: ASCII digits only.
 
+URL_RE = re.compile(r"https?://\S+", re.IGNORECASE)
+
+
+def strip_urls(text):
+    """Remove URLs from text before the Step 3B digit test.
+
+    Ruled 2026-09-07 (dry run 3, bug 1). A t.co shortlink is random
+    alphanumerics, so it carries digits roughly always. Dry run 3 row 20
+    (@wallstengine, "KING CHARLES III'S AI MEETING LIST") has no digit
+    anywhere in the post and passed the gate on the digits inside
+    https://t.co/w9kVRQr8iC. The gate is meant to find a FIGURE.
+
+    Only the digit test uses this. Owned-name and layer-keyword matching still
+    read the text with its URLs intact - a keyword inside a slug is a real hit
+    and nothing about it is spurious.
+    """
+    return URL_RE.sub(" ", text)
+
+
+def digit_gate_hit(sources):
+    """Step 3B digit test over URL-stripped text.
+
+    `sources` is [(name, text)] in priority order. Returns the first hit as
+    {"digit", "context", "source"}, or None. The record carries this so a
+    reader can see WHAT satisfied the gate, which dry run 3 could not.
+    """
+    for name, text in sources:
+        if not text:
+            continue
+        stripped = strip_urls(text)
+        m = re.search(r"[0-9][0-9,.]*", stripped)
+        if not m:
+            continue
+        lo = max(0, m.start() - 30)
+        hi = min(len(stripped), m.end() + 30)
+        context = re.sub(r"\s+", " ", stripped[lo:hi]).strip()
+        return {"digit": m.group(0), "context": context, "source": name}
+    return None
+
 HANGUL_RE = re.compile(r"[가-힯ᄀ-ᇿ]")
 KANA_RE = re.compile(r"[぀-ヿ]")
 HAN_RE = re.compile(r"[㐀-䶿一-鿿]")
@@ -251,6 +307,52 @@ def is_external(url):
     except ValueError:
         return False
     return host.lower() not in X_HOSTS
+
+
+IPV4_RE = re.compile(r"^\d{1,3}(?:\.\d{1,3}){3}$")
+
+
+def implausible_host(url):
+    """Reject a URL that cannot be a source, BEFORE any fetch is attempted.
+
+    Ruled 2026-09-07 (dry run 3, bug 2). Dry run 2 decision (c) demoted a
+    bogus expanded URL to bucket B by watching for a DNS failure. That check
+    cannot fire behind an HTTPS CONNECT proxy: the proxy answers a
+    non-resolving host with "502 Bad Gateway", not a resolver error. So
+    https://300308.SZ filed as bucket A twice. Validate the host up front and
+    never key on the HTTP status.
+
+    Returns a reason string, or None when the host is plausible.
+
+    The third rule is the one that catches the live case. `.sz` is a real
+    ccTLD (Eswatini), so "is this a real TLD" does NOT reject 300308.SZ. What
+    does reject it is its shape: X's auto-linker turns an exchange ticker
+    written in running text - 300308.SZ, 600519.SS, 0700.HK, 005930.KS - into
+    a URL. An all-digit label under a two-letter TLD, with no path and no
+    query, is that ticker and not a website.
+    """
+    try:
+        parts = urllib.parse.urlsplit(url)
+    except ValueError:
+        return "url does not parse"
+    host = (parts.hostname or "").strip().lower()
+    if not host:
+        return "no host"
+    if IPV4_RE.match(host):
+        return None
+    labels = host.split(".")
+    if len(labels) < 2 or not labels[-1]:
+        return "host has no TLD"
+    tld = labels[-1]
+    if not tld.isalpha():
+        return "TLD %r is not alphabetic" % tld
+    if len(tld) < 2:
+        return "TLD %r is shorter than two characters" % tld
+    if (len(labels) == 2 and len(tld) == 2 and labels[0].isdigit()
+            and parts.path in ("", "/") and not parts.query):
+        return ("exchange-ticker shape: all-digit label %r under two-letter "
+                "TLD %r, no path" % (labels[0], tld))
+    return None
 
 
 def looks_like_pdf(url, content_type, body):
@@ -786,9 +888,22 @@ def merge_reply_chains(posts, included):
         members = sorted(member_ids, key=lambda i: int(i))
         head = posts[members[0]]
         texts = [post_text(head)]
+        # Per-post attribution (dry run 3). A merged candidate used to arrive
+        # as one joined blob, so a figure could not be traced back to the post
+        # - and therefore to the Post URL - it came from.
+        post_texts = [{"post_id": members[0], "author_id": head.get("author_id"),
+                       "created_at": head.get("created_at"),
+                       "text": post_text(head), "is_head": True,
+                       "contributed_text": True}]
         for mid in members[1:]:
-            if carries_text_beyond_url(posts[mid]):
+            contributed = carries_text_beyond_url(posts[mid])
+            if contributed:
                 texts.append(post_text(posts[mid]))
+            post_texts.append({"post_id": mid,
+                               "author_id": posts[mid].get("author_id"),
+                               "created_at": posts[mid].get("created_at"),
+                               "text": post_text(posts[mid]), "is_head": False,
+                               "contributed_text": contributed})
 
         urls = []
         for mid in members:                       # first external URL in P, then R
@@ -805,13 +920,22 @@ def merge_reply_chains(posts, included):
                                 if u not in urls:
                                     urls.append(u)
 
-        quoted_texts = []
+        quoted_texts, quoted_posts = [], []
         for mid in members:
             for ref in (posts[mid].get("referenced_tweets") or []):
                 if ref.get("type") == "quoted":
                     quoted = included.get(ref.get("id"))
                     if quoted:
                         quoted_texts.append(post_text(quoted))
+                        # Naming the interested party in a Dated Claim means
+                        # naming whoever wrote the quoted post (dry run 3).
+                        quoted_posts.append({
+                            "post_id": quoted.get("id"),
+                            "author_id": quoted.get("author_id"),
+                            "created_at": quoted.get("created_at"),
+                            "quoted_by_post_id": mid,
+                            "text": post_text(quoted),
+                        })
 
         candidates.append({
             "post_ids": members,
@@ -819,7 +943,9 @@ def merge_reply_chains(posts, included):
             "author_id": head.get("author_id"),
             "created_at": head.get("created_at"),
             "raw_post_text": "\n\n".join(t for t in texts if t),
+            "post_texts": post_texts,
             "quoted_text": "\n\n".join(quoted_texts),
+            "quoted_posts": quoted_posts,
             "external_urls": urls,
         })
         if len(members) > 1:
@@ -852,12 +978,25 @@ def build_records(candidates, users, matcher, store, args):
         page = None
         bucket = "A" if url else "B"
 
+        # Bug 2, ruled 2026-09-07: validate the host BEFORE fetching. A host
+        # that cannot be a source is not a source, whatever the network says
+        # about it - and behind a CONNECT proxy the network says 502, not
+        # NXDOMAIN.
+        if bucket == "A":
+            reason = implausible_host(url)
+            if reason:
+                reclassified.append({"post_url": _post_url(handle, cand["head_id"]),
+                                     "url": url, "reason": reason,
+                                     "stage": "pre-fetch"})
+                bucket, url, page = "B", None, None
+
         if bucket == "A":
             result = fetch(url, store, args.offline, args.fetch_timeout, args.max_bytes)
             if result.get("dns_failure"):
                 # decision (c): the host does not exist, so this is not a source.
                 reclassified.append({"post_url": _post_url(handle, cand["head_id"]),
-                                     "url": url, "reason": "host does not resolve"})
+                                     "url": url, "reason": "host does not resolve",
+                                     "stage": "post-fetch"})
                 fetch_failures.append({"url": url, "status": None,
                                        "error": result.get("error"),
                                        "post_id": cand["head_id"]})
@@ -887,19 +1026,25 @@ def build_records(candidates, users, matcher, store, args):
 
         if bucket == "B":
             # Step 3B gate: at least one digit AND at least one match-table or
-            # layer-keyword string.
-            if not (DIGIT_RE.search(match_text) and (owned or layers)):
+            # layer-keyword string. The digit test reads URL-STRIPPED text
+            # (bug 1, ruled 2026-09-07); the keyword test does not change.
+            digit_gate = digit_gate_hit([("post_text", cand["raw_post_text"]),
+                                         ("quoted_text", cand["quoted_text"])])
+            if not (digit_gate and (owned or layers)):
                 discarded.append({
                     "post_url": _post_url(handle, cand["head_id"]),
                     "account": handle,
                     "bucket": "C",
-                    "reason": ("no digit" if not DIGIT_RE.search(match_text)
+                    "reason": ("no digit outside a URL" if not digit_gate
                                else "no owned-name or layer-keyword match"),
                 })
                 continue
+        else:
+            digit_gate = digit_gate_hit([("post_text", cand["raw_post_text"]),
+                                         ("quoted_text", cand["quoted_text"])])
 
-        records.append(_record(cand, handle, bucket, url, page, owned,
-                               match_text, args))
+        records.append(_record(cand, handle, bucket, url, page, owned, layers,
+                               digit_gate, match_text, users, args))
 
     return records, discarded, fetch_failures, parse_failures, reclassified
 
@@ -908,11 +1053,12 @@ def _post_url(handle, post_id):
     return "https://x.com/%s/status/%s" % (handle.lstrip("@"), post_id)
 
 
-def _record(cand, handle, bucket, url, page, owned, match_text, args):
+def _record(cand, handle, bucket, url, page, owned, layers, digit_gate,
+            match_text, users, args):
     """Step 5, mechanical fields only.
 
     Headline and Dated Claim are NOT written - they are the model's, from
-    raw_post_text and the fetched page. Layer never appears at all.
+    _post_texts and the fetched page. Layer never appears at all.
     """
     info = (page or {}).get("info") or {}
     page_body = info.get("body_text") or ""
@@ -924,17 +1070,18 @@ def _record(cand, handle, bucket, url, page, owned, match_text, args):
         source_date = info.get("source_date")
         # Step 4: 'Fetch fails or is paywalled: file Unverified, keep the URL.'
         # 'Source fetched' means the fetch CONFIRMED the claim (dry run 2,
-        # decision (g)) - that is a reading judgment, so the script leaves
-        # verification null and the model decides. Where the prompt forces
-        # Unverified mechanically, the script says Unverified.
+        # decision (g)) - that is a reading judgment, so the script hands the
+        # model the named state VERIFICATION_MODEL_DECIDES and the excerpt to
+        # decide from. Where the prompt forces Unverified mechanically, the
+        # script says Unverified.
         if not (page or {}).get("ok") or (page or {}).get("parse_error"):
-            verification = "Unverified"
+            verification = VERIFICATION_UNVERIFIED
         else:
-            verification = None
+            verification = VERIFICATION_MODEL_DECIDES
     else:
         publisher = handle
         source_date = None
-        verification = "Unverified"   # Step 5, bucket B: always Unverified.
+        verification = VERIFICATION_UNVERIFIED   # Step 5, bucket B: always.
 
     return {
         "post_url": _post_url(handle, cand["head_id"]),
@@ -950,12 +1097,55 @@ def _record(cand, handle, bucket, url, page, owned, match_text, args):
         "translated_from": detect_script(cand["raw_post_text"]),
         "raw_post_text": cand["raw_post_text"],
         "fetched_page_path": (page or {}).get("path"),
-        # Working fields the model needs; not Signal Inbox columns.
+        # Working fields the model needs; not Signal Inbox columns. Every one
+        # carries a leading underscore. _layer_hits is Step 3B gate evidence,
+        # NOT a Layer - Layer is the Weekly Signal Review's and appears
+        # nowhere in this file.
         "_post_ids": cand["post_ids"],
+        "_post_texts": _attribute_posts(cand, users),
         "_quoted_text": cand["quoted_text"],
+        "_quoted_posts": _attribute_quoted(cand, users),
+        "_layer_hits": layers,
+        "_digit_gate": digit_gate,
+        "_source_excerpt": page_body[:SOURCE_EXCERPT_CHARS] or None,
         "_page_title": info.get("page_title"),
         "_fetch_status": (page or {}).get("status"),
     }
+
+
+def _handle(users, author_id):
+    user = users.get(author_id) or {}
+    return "@" + user.get("username", author_id or "unknown")
+
+
+def _attribute_posts(cand, users):
+    """Which text came from which post, with that post's own URL."""
+    out = []
+    for entry in cand.get("post_texts") or []:
+        h = _handle(users, entry.get("author_id"))
+        out.append({"post_id": entry["post_id"],
+                    "post_url": _post_url(h, entry["post_id"]),
+                    "account": h,
+                    "created_at": entry.get("created_at"),
+                    "is_head": entry.get("is_head", False),
+                    "contributed_text": entry.get("contributed_text", True),
+                    "text": entry.get("text") or ""})
+    return out
+
+
+def _attribute_quoted(cand, users):
+    """Quoted posts with the handle and URL of whoever wrote them."""
+    out = []
+    for entry in cand.get("quoted_posts") or []:
+        h = _handle(users, entry.get("author_id"))
+        out.append({"post_id": entry.get("post_id"),
+                    "post_url": (_post_url(h, entry["post_id"])
+                                 if entry.get("post_id") else None),
+                    "account": h,
+                    "created_at": entry.get("created_at"),
+                    "quoted_by_post_id": entry.get("quoted_by_post_id"),
+                    "text": entry.get("text") or ""})
+    return out
 
 
 def dedup(records, existing):
@@ -1006,6 +1196,19 @@ def dedup(records, existing):
                     if handle not in winner["account"]:
                         winner["account"].append(handle)
                 winner["_post_ids"] = winner["_post_ids"] + other["_post_ids"]
+                # Attribution survives the collapse: the joined raw_post_text
+                # below is a convenience, _post_texts is the record of which
+                # post each figure came from.
+                winner["_post_texts"] = (winner.get("_post_texts") or []) + \
+                    (other.get("_post_texts") or [])
+                winner["_quoted_posts"] = (winner.get("_quoted_posts") or []) + \
+                    (other.get("_quoted_posts") or [])
+                winner.setdefault("_layer_hits", [])
+                for layer in (other.get("_layer_hits") or []):
+                    if layer not in winner["_layer_hits"]:
+                        winner["_layer_hits"].append(layer)
+                if not winner.get("_source_excerpt") and other.get("_source_excerpt"):
+                    winner["_source_excerpt"] = other["_source_excerpt"]
                 # Every member of a "url:" cluster already carries that same
                 # source URL, so there is no resolved source to rescue here.
                 # The cross-bucket case (dry run 2, decision (f)) only arises
@@ -1092,7 +1295,7 @@ def main(argv=None):
 
     created = [c["created_at"] for c in candidates if c.get("created_at")]
     meta = {
-        "prompt_version": "x-sweep v1.4",
+        "prompt_version": "x-sweep v1.5",
         "list_id": args.list_id,
         "high_water_mark_in": args.high_water_mark,
         "newest_post_id": max(posts, key=lambda i: int(i)) if posts else None,
@@ -1112,7 +1315,9 @@ def main(argv=None):
                              "Post URL against existing Signal Inbox rows.",
         },
         "step_6b_claim_dedup": "NOT PERFORMED - needs Dated Claim, which this "
-                               "script does not write. The model runs it.",
+                               "script does not write. The model runs it, "
+                               "against existing Signal Inbox rows as well as "
+                               "within this run (prompt v1.5).",
         "step_6c_cap": "NOT APPLIED - every surviving candidate is in this "
                        "file. The cap runs AFTER 6b; capping first drops rows "
                        "that were about to merge.",
@@ -1122,7 +1327,7 @@ def main(argv=None):
         "newest_created_at": max(created) if created else None,
         "candidates_out": len(records),
         "left_to_the_model": ["Headline", "Dated Claim", "Layer (never set)",
-                              "Verification where it is null",
+                              "Verification where it is %r" % VERIFICATION_MODEL_DECIDES,
                               "Translated From from a stated translation",
                               "Step 6b claim-level dedup, then Step 6c cap, "
                               "in that order"],

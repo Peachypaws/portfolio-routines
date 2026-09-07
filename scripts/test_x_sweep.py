@@ -301,14 +301,23 @@ def test_cap():
 # 5. Dedup (Step 6)
 # --------------------------------------------------------------------------
 
-def _rec(post_url, captured, bucket, src=None, hits=None, handle="@x"):
+def _rec(post_url, captured, bucket, src=None, hits=None, handle="@x",
+         layers=None, excerpt=None):
+    pid = post_url.rsplit("/", 1)[-1]
     return {"post_url": post_url, "account": [handle], "captured": captured,
             "bucket": bucket, "underlying_source_url": src, "publisher": None,
-            "source_date": None, "verification": None,
+            "source_date": None, "verification": xs.VERIFICATION_MODEL_DECIDES,
             "owned_name_hits": hits or ["None"], "anthropic_flag": False,
             "translated_from": None, "raw_post_text": "t",
-            "fetched_page_path": None, "_post_ids": [post_url.rsplit("/", 1)[-1]],
-            "_quoted_text": "", "_page_title": None, "_fetch_status": 200}
+            "fetched_page_path": None, "_post_ids": [pid],
+            "_post_texts": [{"post_id": pid, "post_url": post_url,
+                             "account": handle, "created_at": captured,
+                             "is_head": True, "contributed_text": True,
+                             "text": "t"}],
+            "_quoted_text": "", "_quoted_posts": [],
+            "_layer_hits": list(layers or []),
+            "_digit_gate": None, "_source_excerpt": excerpt,
+            "_page_title": None, "_fetch_status": 200}
 
 
 def test_dedup():
@@ -508,7 +517,8 @@ def test_end_to_end():
     eq(king["underlying_source_url"], udn, "e2e-tracking-params-stripped")
     eq(king["source_date"], "2026-09-07", "e2e-source-date")
     eq(king["publisher"], "經濟日報", "e2e-publisher")
-    eq(king["verification"], None, "e2e-verification-left-to-model")
+    eq(king["verification"], "Model decides", "e2e-verification-named-state")
+    check(king["verification"] is not None, "e2e-verification-never-null")
     eq(king["bucket"], "A", "e2e-bucket-a")
     check(king["fetched_page_path"] is not None, "e2e-page-path")
     check("King Slide" in king["raw_post_text"], "e2e-raw-text")
@@ -546,7 +556,10 @@ def test_end_to_end():
                        "classification", "Classification"):
             check(banned not in rec, "no-model-field", "%s in record" % banned)
 
-    # A bogus expanded URL falls back to bucket B, not a filed URL (decision (c)).
+    # BUG 2, ruled 2026-09-07. The exact URL that filed as bucket A in dry runs
+    # 2 and 3. It is now rejected BEFORE any fetch, so there is no fetch at all
+    # to fail - which is the point: behind a CONNECT proxy the fetch would have
+    # returned 502, not a DNS error, and the old check would have missed it.
     bogus_page = {
         "data": [_tweet("200", "u1", "300308.SZ up 8% on HBM demand",
                         "2026-09-07T05:00:00.000Z", urls=["https://300308.SZ"])],
@@ -558,12 +571,18 @@ def test_end_to_end():
                      "--out", out_file], stderr=subprocess.PIPE)
     with io.open(out_file, encoding="utf-8") as fh:
         out2 = json.load(fh)
-    # Offline, an uncached URL cannot be resolved, so it is a fetch failure and
-    # the row files with the URL kept (Step 4). The DNS reclassification is
-    # exercised as a unit below.
     eq(len(out2["records"]), 1, "bogus-one-record")
-    eq(len(out2["meta"]["fetch_failures"]), 1, "bogus-fetch-failure")
+    rec = out2["records"][0]
+    eq(rec["bucket"], "B", "bogus-demoted-to-bucket-b")
+    eq(rec["underlying_source_url"], None, "bogus-url-not-filed")
+    eq(rec["publisher"], "@DrNHJ", "bogus-publisher-is-the-account")
+    eq(rec["verification"], "Unverified", "bogus-unverified")
+    eq(len(out2["meta"]["fetch_failures"]), 0, "bogus-never-fetched")
+    eq(len(out2["meta"]["reclassified_a_to_b"]), 1, "bogus-reclassified")
+    eq(out2["meta"]["reclassified_a_to_b"][0]["stage"], "pre-fetch",
+       "bogus-rejected-before-fetch")
 
+    # The post-fetch DNS arm still works where there is no proxy in the way.
     class _Reason(OSError):
         pass
     err = __import__("urllib.error", fromlist=["URLError"]).URLError(
@@ -618,6 +637,11 @@ def test_fixture_contract():
             check(row["underlying_source_url"], "filed-a-has-url")
             check(row["verification"] in ("Source fetched", "Unverified"),
                   "filed-a-verification")
+            # The fixture holds FILED rows, so the model has already resolved
+            # "Model decides" into a Notion option. That state must never reach
+            # Notion.
+            check(row["verification"] != xs.VERIFICATION_MODEL_DECIDES,
+                  "model-decides-never-filed", row["post_url"])
 
     # No filed Underlying Source URL carries a tracking parameter: clean_url is
     # idempotent over every one of them.
@@ -647,9 +671,230 @@ def test_fixture_contract():
     eq(counts["bucket_b_kept_under_cap"], 0, "filed-none-under-cap")
 
 
+
+# --------------------------------------------------------------------------
+# 9. Bug 1 - the Step 3B digit gate must not read URLs
+#    Bug 2 - implausible hosts are rejected before any fetch
+#    Prompt v1.5 handover fields
+# --------------------------------------------------------------------------
+
+def test_digit_gate_ignores_urls():
+    # strip_urls removes the link and nothing else.
+    eq(xs.strip_urls("KING CHARLES III https://t.co/w9kVRQr8iC").strip(),
+       "KING CHARLES III", "strip-urls-removes-link")
+    eq(xs.strip_urls("no links here"), "no links here", "strip-urls-noop")
+    check("2,645" in xs.strip_urls("target RMB2,645 https://t.co/a1b2"),
+          "strip-urls-keeps-real-figures")
+    eq(" ".join(xs.strip_urls("see http://a.com/9 and https://b.com/8").split()),
+       "see and", "strip-urls-both-schemes")
+
+    # The live case: dry run 3 row 20. No digit in the post; digits only in the
+    # t.co shortlink. This must NOT pass the gate.
+    row20 = ("NVIDIA $NVDA CEO JENSEN HUANG AMONG GUESTS ON KING CHARLES III'S "
+             "AI MEETING LIST - POLITICO https://t.co/w9kVRQr8iC")
+    eq(xs.digit_gate_hit([("post_text", row20), ("quoted_text", "")]), None,
+       "row20-no-digit-outside-url")
+    check(xs.DIGIT_RE.search(row20) is not None, "row20-did-pass-the-old-gate")
+
+    # A real figure still passes, and the gate says what matched and where.
+    hit = xs.digit_gate_hit([("post_text", "YMTC could reach 18% of NAND "
+                                           "https://t.co/zz9"), ("quoted_text", "")])
+    eq(hit["digit"], "18", "gate-records-the-digit")
+    eq(hit["source"], "post_text", "gate-records-the-source")
+    check("YMTC" in hit["context"], "gate-records-context")
+
+    # A digit that lives only in the quoted post still counts - that reading is
+    # ruled and stays ruled (dry run 1's narrowing was the bug, not the fix).
+    hit = xs.digit_gate_hit([("post_text", "Anyone? https://t.co/a1"),
+                             ("quoted_text", "30-40 min call")])
+    eq(hit["source"], "quoted_text", "gate-reads-the-quoted-post")
+    eq(hit["digit"], "30", "gate-quoted-digit")
+
+    # Thousands separators and decimals travel with the figure.
+    eq(xs.digit_gate_hit([("post_text", "NT$6.466bn")])["digit"], "6.466",
+       "gate-keeps-decimal")
+    eq(xs.digit_gate_hit([("post_text", "RMB2,645 target")])["digit"], "2,645",
+       "gate-keeps-thousands-separator")
+
+    # Keyword and owned-name matching are UNAFFECTED by the strip.
+    m = xs.Matcher()
+    slug = "https://biz.chosun.com/nvidia-hbm4-ramp"
+    eq(m.owned_hits(slug), ["NVDA"], "owned-match-still-reads-urls")
+    check("HBM" in m.layer_hits(slug), "layer-match-still-reads-urls")
+
+
+def test_implausible_host():
+    # The live case, and its whole family. .sz IS a real ccTLD, so a TLD
+    # allowlist would not catch this - the shape does.
+    for url in ["https://300308.SZ", "https://300308.sz", "https://600519.SS",
+                "https://0700.HK", "https://005930.KS"]:
+        reason = xs.implausible_host(url)
+        check(reason is not None, "ticker-shape-rejected", url)
+        check("ticker" in reason, "ticker-shape-reason", "%s -> %r" % (url, reason))
+
+    # No TLD at all, and a non-alphabetic TLD.
+    check(xs.implausible_host("https://localhost") is not None, "no-tld-rejected")
+    check(xs.implausible_host("https://300308.12") is not None, "numeric-tld-rejected")
+    check(xs.implausible_host("https://example.c") is not None, "one-char-tld-rejected")
+
+    # Real sources from dry runs 2 and 3 all pass.
+    for url in ["https://www.reuters.com/business/energy/ship-fuel-2026-09-07/",
+                "https://money.udn.com/money/story/5710/9739533",
+                "https://zdnet.co.kr/view/?no=20260907110055",
+                "https://biz.chosun.com/it-science/ict/2026/09/07/V7UWTGBE45GZ5.../",
+                "https://n.news.naver.com/mnews/article/015/0005329331",
+                "https://t.me/Jstockclass/15086",
+                "https://irrationalanalysis.substack.com/p/hot-chips-2026-recap",
+                "https://ww2.money-link.com.tw/realtimenews/NewsContent.aspx?PU=1002",
+                "https://192.168.1.10/report"]:
+        eq(xs.implausible_host(url), None, "real-source-passes")
+
+    # A digit-labelled host is fine once it has a path or a longer TLD - the
+    # rule is deliberately narrow.
+    eq(xs.implausible_host("https://300308.sz/news/article"), None,
+       "digit-label-with-path-passes")
+    eq(xs.implausible_host("https://123.com"), None, "digit-label-normal-tld-passes")
+
+    # The check must not key on HTTP status anywhere. Scan the CODE only - the
+    # docstring names the 502 it exists to stop trusting.
+    src = io.open(os.path.join(HERE, "x_sweep.py"), encoding="utf-8").read()
+    body = src.split("def implausible_host(")[1].split("\ndef ")[0]
+    code = body.split('"""', 2)[-1]
+    check('"""' in body, "host-check-has-a-docstring")
+    for banned in ("status", "502", "getcode", ".code", "urlopen", "fetch("):
+        check(banned not in code, "host-check-ignores-http", banned)
+
+
+def _run_offline(pages, tmp, pages_dir):
+    posts_file = os.path.join(tmp, "p.json")
+    out_file = os.path.join(tmp, "c.json")
+    _write(posts_file, {"pages": pages})
+    subprocess.call([sys.executable, os.path.join(HERE, "x_sweep.py"),
+                     "--posts", posts_file, "--offline", "--pages-dir", pages_dir,
+                     "--out", out_file], stderr=subprocess.PIPE)
+    with io.open(out_file, encoding="utf-8") as fh:
+        return json.load(fh)
+
+
+def test_handover_fields():
+    """The six gaps dry run 3 named in candidates.json."""
+    tmp = tempfile.mkdtemp(prefix="xsweep-v15-")
+    pages_dir = os.path.join(tmp, "pages")
+    os.makedirs(pages_dir)
+    udn = "https://money.udn.com/money/story/5710/9739533"
+    xs.PageStore(pages_dir).put(
+        udn, {"status": 200, "final_url": udn,
+              "content_type": "text/html; charset=utf-8", "is_pdf": False},
+        HTML_PAGE)
+
+    quoted = _tweet("300", "u9", "Blended DRAM px expected ~10% QoQ in 4Q26",
+                    "2026-09-07T01:00:00.000Z")
+    page = {
+        "data": [
+            # merged same-author chain: figure in the head, link in the reply
+            _tweet("400", "u1", "King Slide August revenue NT$6.466bn, +344% y/y",
+                   "2026-09-07T12:14:00.000Z"),
+            _tweet("401", "u1", udn, "2026-09-07T12:15:00.000Z", urls=[udn],
+                   replied_to="400"),
+            # bucket B whose figure lives in the quoted post
+            _tweet("402", "u2", "Turning positive on DRAM. HBM demand.",
+                   "2026-09-07T02:00:00.000Z", quoted="300"),
+            # the row-20 shape: digits only inside the shortlink -> bucket C
+            _tweet("403", "u3", "JENSEN HUANG ON KING CHARLES' AI LIST "
+                                "https://t.co/w9kVRQr8iC",
+                   "2026-09-07T03:00:00.000Z"),
+        ],
+        "includes": {"users": [{"id": "u1", "username": "DrNHJ"},
+                               {"id": "u2", "username": "QQ_Timmy"},
+                               {"id": "u3", "username": "wallstengine"},
+                               {"id": "u9", "username": "pequityresearch"}],
+                     "tweets": [quoted]},
+    }
+    out = _run_offline([page], tmp, pages_dir)
+    by_url = {r["post_url"]: r for r in out["records"]}
+
+    # (a) layer_hits survives to the output, under a name that is not Layer.
+    king = by_url["https://x.com/DrNHJ/status/400"]
+    check("_layer_hits" in king, "layer-hits-emitted")
+    check("layer" not in king and "Layer" not in king, "still-no-layer-key")
+    dram = by_url["https://x.com/QQ_Timmy/status/402"]
+    check("HBM" in dram["_layer_hits"], "layer-hits-populated")
+    check("DRAM" in dram["_layer_hits"], "layer-hits-from-post")
+
+    # (b) the digit gate records what satisfied it, post-URL-strip.
+    eq(dram["_digit_gate"]["source"], "quoted_text", "digit-gate-source-recorded")
+    eq(dram["_digit_gate"]["digit"], "10", "digit-gate-digit-recorded")
+    check(dram["_digit_gate"]["context"], "digit-gate-context-recorded")
+
+    # ...and the row-20 shape is discarded to bucket C with the honest reason.
+    check("https://x.com/wallstengine/status/403" not in by_url,
+          "row20-shape-discarded")
+    reasons = [d["reason"] for d in out["meta"]["discarded_bucket_c"]["detail"]]
+    check("no digit outside a URL" in reasons, "row20-discard-reason")
+
+    # (c) per-post attribution across a merge: which text came from which post.
+    eq(len(king["_post_texts"]), 2, "merged-record-attributes-both-posts")
+    heads = [e for e in king["_post_texts"] if e["is_head"]]
+    eq(len(heads), 1, "one-head-post")
+    eq(heads[0]["post_url"], "https://x.com/DrNHJ/status/400", "head-post-url")
+    check("6.466" in heads[0]["text"], "figure-attributed-to-its-post")
+    tail = [e for e in king["_post_texts"] if not e["is_head"]][0]
+    eq(tail["post_url"], "https://x.com/DrNHJ/status/401", "reply-post-url")
+    eq(tail["contributed_text"], False, "bare-url-reply-marked-no-text")
+
+    # (d) a body excerpt travels with a bucket-A record.
+    check(king["_source_excerpt"], "source-excerpt-present")
+    check("King Slide reported" in king["_source_excerpt"], "source-excerpt-readable")
+    check(len(king["_source_excerpt"]) <= xs.SOURCE_EXCERPT_CHARS,
+          "source-excerpt-bounded")
+    # The excerpt is body text, so an excluded sidebar cannot leak into it.
+    check("Anthropic" not in king["_source_excerpt"], "excerpt-excludes-sidebar")
+    eq(dram["_source_excerpt"], None, "bucket-b-has-no-excerpt")
+
+    # (e) quoted post carries its author's handle and URL.
+    eq(len(dram["_quoted_posts"]), 1, "one-quoted-post")
+    q = dram["_quoted_posts"][0]
+    eq(q["account"], "@pequityresearch", "quoted-author-handle")
+    eq(q["post_url"], "https://x.com/pequityresearch/status/300", "quoted-post-url")
+    eq(q["quoted_by_post_id"], "402", "quoted-linked-to-quoting-post")
+    check(q["text"] in dram["_quoted_text"], "quoted-text-still-present")
+
+    # (f) verification is a named state, never null.
+    eq(king["verification"], xs.VERIFICATION_MODEL_DECIDES, "verification-named")
+    eq(dram["verification"], xs.VERIFICATION_UNVERIFIED, "bucket-b-unverified")
+    for rec in out["records"]:
+        check(rec["verification"] is not None, "verification-never-null",
+              rec["post_url"])
+        check(rec["verification"] in (xs.VERIFICATION_UNVERIFIED,
+                                      xs.VERIFICATION_MODEL_DECIDES),
+              "verification-in-the-named-set", rec["verification"])
+
+    # Every working field is underscore-prefixed, so nothing new can be mistaken
+    # for a Signal Inbox column.
+    for rec in out["records"]:
+        for field in ("_layer_hits", "_digit_gate", "_post_texts",
+                      "_quoted_posts", "_source_excerpt"):
+            check(field in rec, "handover-field-present", field)
+            check(field.startswith("_"), "handover-field-underscored", field)
+
+    # A 6a collapse keeps attribution from every member.
+    src = "https://example.com/one-source"
+    r1 = _rec("https://x.com/a/status/1", "2026-09-07T00:00:00.000Z", "A", src,
+              layers=["HBM"], handle="@a")
+    r2 = _rec("https://x.com/b/status/2", "2026-09-07T01:00:00.000Z", "A", src,
+              layers=["DRAM"], handle="@b", excerpt="body")
+    kept, clusters, _ = xs.dedup([r1, r2], [])
+    eq(len(kept), 1, "collapse-one-row")
+    eq(len(kept[0]["_post_texts"]), 2, "collapse-keeps-both-attributions")
+    eq(sorted(kept[0]["_layer_hits"]), ["DRAM", "HBM"], "collapse-unions-layer-hits")
+    eq(kept[0]["_source_excerpt"], "body", "collapse-rescues-the-excerpt")
+
+
 def main():
     for fn in (test_matching, test_urls, test_parser, test_cap, test_dedup,
-               test_merge_and_bucket, test_end_to_end, test_fixture_contract):
+               test_merge_and_bucket, test_end_to_end, test_fixture_contract,
+               test_digit_gate_ignores_urls, test_implausible_host,
+               test_handover_fields):
         fn()
     print("checks run: %d" % CHECKS[0])
     if FAILURES:

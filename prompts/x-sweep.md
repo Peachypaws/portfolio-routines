@@ -1,4 +1,4 @@
-X Sweep — prompt v1.4 — 2026-09-07
+X Sweep — prompt v1.5 — 2026-09-07
 Source of truth: Notion page 3d431d4f-7b77-8192-9901-ccd6e91ca9ab, until this file supersedes it.
 
 ROLE
@@ -51,8 +51,11 @@ Chains deeper than two merge the same way. Count every merge in the run row. Thi
 
 STEP 3 - BUCKET
 A. The candidate has an external URL (an expanded_url not on x.com or twitter.com) -> candidate.
+   An expanded_url whose HOST cannot be a source is not an external URL. Check the host BEFORE fetching it and never key this on the HTTP status: a host with no TLD, a non-alphabetic TLD, or the exchange-ticker shape (an all-digit label under a two-letter TLD with no path - 300308.SZ, 0700.HK, 005930.KS, which X auto-links out of running text) makes the candidate bucket B, with Underlying Source URL blank. Do not fetch it and do not file it. Ruled after dry run 3: the earlier test watched for a DNS failure, which a proxy hides behind a 502, and https://300308.SZ filed as bucket A twice.
 B. No external URL, but the matched text contains at least one digit AND at least one string from the OWNED-NAME MATCH TABLE or LAYER KEYWORDS -> candidate, no-link.
    "Matched text" is the full set defined in MATCHING RULES: the post text, the note_tweet, AND the quoted post's text. The digit may come from the quoted post, and so may the matched string. Do NOT narrow this gate to the post text alone - dry run 1 did, and discarded two live candidates for it.
+   STRIP EVERY URL FROM THE TEXT BEFORE THE DIGIT TEST. A t.co shortlink is random alphanumerics and carries digits almost always, so an unstripped gate passes posts with no figure in them at all - dry run 3 filed "KING CHARLES III'S AI MEETING LIST" on the digits inside https://t.co/w9kVRQr8iC. The gate is looking for a FIGURE. This applies to the digit test ONLY: owned-name and layer-keyword matching still read the text with its URLs intact, since a keyword inside a slug is a real hit.
+   Record what satisfied the digit gate - the figure and where it came from - so a reader can see why a no-link post survived.
 C. Neither -> discard, count, record the account.
 
 STEP 4 - RESOLVE THE UNDERLYING SOURCE (bucket A only)
@@ -100,6 +103,26 @@ the way down first; cap what is left.
     - This cannot run any earlier: Dated Claim does not exist until you write
       it in Step 5. It is the arm that catches the same story pasted link-free
       by several accounts, which URL matching can never see.
+    - RUN 6b AGAINST EXISTING SIGNAL INBOX ROWS AS WELL AS WITHIN THIS RUN.
+      6a's cross-run arm matches on URLs only, so a link-free claim that a new
+      account pastes on a later day has nothing to collide with and re-files
+      forever. Read the Dated Claim of the rows already in the inbox and
+      compare against them too. Where a candidate matches an existing row, do
+      not create a row: append the new @handle to that row's Account if it is
+      not already there, and count it as already filed. Five of dry run 3's
+      21 candidates were cross-run duplicates this arm would have caught.
+    - DATED CLAIM = "none" IS EXCLUDED FROM 6b. NEVER MERGE ON "none". It is
+      the absence of a claim, not a claim. Dry run 3 carried six of them;
+      merging on string equality would have collapsed six unrelated posts into
+      one row.
+    - 6b MERGES ON THE SAME UNDERLYING CLAIM, NOT ON STRING EQUALITY. A
+      shorter paraphrase of the same figure from the same interested party is
+      the same claim, and so is the same note quoted at different lengths or
+      in another language. Keep the FULLEST set of figures in the surviving
+      row. This is a stated allowance and it is yours to exercise: dry run 3's
+      three copies of one sell-side memory note were byte-different and are
+      one claim. It is not licence to merge two different figures because they
+      are about the same subject - if the numbers differ, the claims differ.
 
 6c. CAP - last
     - A bucket-B row carrying a live Owned-Name Hit is NEVER dropped. The cap
